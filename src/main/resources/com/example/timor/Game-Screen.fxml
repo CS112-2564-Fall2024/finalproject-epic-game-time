@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="398.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.GameScreenController">
+   <children>
+      <Canvas fx:id="canvas" height="667.0" width="1030.0" />
+      <ImageView id="background" fitHeight="667.0" fitWidth="1030.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView id="enemyDisplay" fitHeight="227.0" fitWidth="254.0" layoutX="699.0" layoutY="107.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView id="playerDisplay" fitHeight="227.0" fitWidth="261.0" layoutX="96.0" layoutY="334.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="roomNumberLabel" layoutX="24.0" layoutY="30.0" prefHeight="17.0" prefWidth="119.0" text="Room 1">
+         <font>
+            <Font name="System Italic" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentDamageLabel" layoutX="24.0" layoutY="65.0" prefHeight="35.0" prefWidth="119.0" text="Damage: ">
+         <font>
+            <Font name="System Italic" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentCritLabel" layoutX="24.0" layoutY="103.0" prefHeight="35.0" prefWidth="119.0" text="Crit:">
+         <font>
+            <Font name="System Italic" size="24.0" />
+         </font>
+      </Label>
+      <Label fx:id="currentBlockLabel" layoutX="28.0" layoutY="138.0" prefHeight="35.0" prefWidth="112.0" text="Block:">
+         <font>
+            <Font name="System Italic" size="24.0" />
+         </font>
+      </Label>
+      <ProgressBar fx:id="playerHealthProgress" layoutX="127.0" layoutY="583.0" prefWidth="200.0" progress="0.0" />
+      <ProgressBar fx:id="enemyHealthProgress" layoutX="726.0" layoutY="357.0" prefWidth="200.0" progress="0.0" />
+   </children>
+</AnchorPane>
