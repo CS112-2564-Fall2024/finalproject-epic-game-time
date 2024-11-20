@@ -11,6 +11,7 @@ public class Test {
         Weapon weapon = new Weapon ("dagger",10, Optional.of(0.0), "white");
         Armor armor =  new Armor ("diamond", 4, Optional.of(0.0), "white");
         Enemy skeleton = new AngrySkeleton();
+        //need to fix
 
         Player Eboss = new Player(10, weapon, armor);
         System.out.println(Eboss);
