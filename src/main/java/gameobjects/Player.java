@@ -1,44 +1,66 @@
 package gameobjects;
 
+import gameobjects.enemy.Enemy;
+
 public class Player {
-    private int maxHealthPoints;
-    private int healthPoints;
+
+    //constant values will be starting values for character
+
+    //Variables
+    private double playerMaxHealthPoints;
+    private double playerHealthPoints;
     private Weapon equippedWeapon;
     private Armor equippedArmor;
+    public boolean isAlive;
 
     //Full constructor
-    public Player(int maxHealthPoints, Weapon equippedWeapon, Armor equippedArmor) {
-        this.maxHealthPoints = maxHealthPoints;
-        this.healthPoints = maxHealthPoints;
+    public Player(double playerMaxHealthPoints, Weapon equippedWeapon, Armor equippedArmor) {
+        this.playerMaxHealthPoints = playerMaxHealthPoints;
+        this.playerHealthPoints = playerMaxHealthPoints;
         this.equippedWeapon = equippedWeapon;
         this.equippedArmor = equippedArmor;
+        this.isAlive = true;
     }
 
     //getter for health
-    public int getHealthpoints() {
-        return healthPoints;
+    public double getPlayerHealthPoints() {
+        return playerHealthPoints;
     }
 
     //getter for max health
-    public int getMaxHealthPoints() {
-        return maxHealthPoints;
+    public double getPlayerMaxHealthPoints() {
+        return playerMaxHealthPoints;
+    }
+
+    public void setPlayerHealthPoints(double playerHealthPoints) {
+        this.playerHealthPoints = playerHealthPoints;
+    }
+
+    public void setPlayerMaxHealthPoints(double playerMaxHealthPoints) {
+        this.playerMaxHealthPoints = playerMaxHealthPoints;
+    }
+
+    //boolean to check player status alive or dead (true or false)
+    public boolean isAlive() {
+        return isAlive;
     }
 
     //taking damage
-    public void takeDamage(int enemyDamage) {
-        healthPoints -= equippedArmor.calculateBlockedDamage(enemyDamage);
+    public void playerTakeDamage(int enemyDamage) {
+        this.playerHealthPoints -= equippedArmor.calculateBlockedDamage(enemyDamage);
         //prevent going below 0 hp
-        if (healthPoints <= 0) {
-            healthPoints = 0;
+        if (playerHealthPoints <= 0) {
+            playerHealthPoints = 0;
+            isAlive = false;
         }
     }
 
     //to heal player
     public void heal(int healAmount) {
-        healthPoints += healAmount;
+        playerHealthPoints += healAmount;
         // cap to max health
-        if (healthPoints > maxHealthPoints) {
-            healthPoints = maxHealthPoints;
+        if (playerHealthPoints > playerMaxHealthPoints) {
+            playerHealthPoints = playerMaxHealthPoints;
         }
 
     }
@@ -57,21 +79,22 @@ public class Player {
 
     //calculated attack based on weapon damage, and its crit percent
     //Crit does 1.5x damage
-    public void attack() {
+    public void playerAttack(Enemy enemy) {
         double damage = equippedWeapon.calculateDamage();
-        System.out.println("Attacks with " + equippedWeapon.getName() + " dealing " + damage + " damage.");
+        enemy.enemyTakeDamage(damage);
+        double calculatedDamageAfterDefense = enemy.calculateBlockedDamageEnemy(damage);
+        System.out.println("Attacks with " + equippedWeapon.getName() + " dealing " + calculatedDamageAfterDefense + " damage.");
     }
 
-    //boolean check if player is still alive
-    public boolean isDead() {
-        return healthPoints == 0;
+    //if player block reduces damage by 75%
+    public void playerBlock(double enemyDamage) {
+        this.playerHealthPoints -= enemyDamage * 0.75;
     }
-
     //Testing method to display current health
     public void displayHealthPoints() {
-        System.out.println("Health Points: " + healthPoints+ "/" + maxHealthPoints);
+        System.out.println("Player Health Points: " + playerHealthPoints + "/" + playerMaxHealthPoints);
     }
     public String toString() {
-        return "{ Health: " + healthPoints + ", Weapon: " + equippedWeapon.getName() + ", Armor: " + equippedArmor.getName() + " }";
+        return "{ Health: " + playerHealthPoints + ", Weapon: " + equippedWeapon.getName() + ", Armor: " + equippedArmor.getName() + " }";
     }
 }

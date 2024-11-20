@@ -1,20 +1,24 @@
 package gameobjects.enemy;
 
-public class Enemy {
+import gameobjects.Player;
+
+public abstract class Enemy {
 
     private String name;
-    private int health;
-    private int maxHealth;
+    private double enemyHealth;
+    private double enemyMaxHealth;
     private int attackDamage;
     private int defense;
+    public boolean enemyIsAlive;
 
     //Full Constructor
-    public Enemy(String name, int maxHealth, int attackDamage, int defense) {
+    public Enemy(String name, double enemyMaxHealth, int attackDamage, int defense) {
         this.name = name;
-        this.maxHealth = maxHealth;
-        this.health = maxHealth;
+        this.enemyMaxHealth = enemyMaxHealth;
+        this.enemyHealth = enemyMaxHealth;
         this.attackDamage = attackDamage;
         this.defense = defense;
+        enemyIsAlive = true;
     }
 
     //setters/getters
@@ -27,20 +31,20 @@ public class Enemy {
         this.name = name;
     }
 
-    public int getHealth() {
-        return health;
+    public double getEnemyHealth() {
+        return enemyHealth;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
+    public void setEnemyHealth(double enemyHealth) {
+        this.enemyHealth = enemyHealth;
     }
 
-    public int getMaxHealth() {
-        return maxHealth;
+    public double getEnemyMaxHealth() {
+        return enemyMaxHealth;
     }
 
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
+    public void setEnemyMaxHealth(double enemyMaxHealth) {
+        this.enemyMaxHealth = enemyMaxHealth;
     }
 
     public int getDefense() {
@@ -59,12 +63,34 @@ public class Enemy {
         this.attackDamage = attackDamage;
     }
 
-    public boolean enemyIsDead() {
-        return health == 0;
+    public boolean enemyIsAlive() {
+        return enemyIsAlive;
     }
 
-    public int enemyAttack () {
-        int damage = getAttackDamage();
+    public abstract void enemyAttack();
+
+    public void enemyTakeDamage(double damage) {
+        this.enemyHealth -= calculateBlockedDamageEnemy(damage);
+
+        if (enemyHealth <= 0) {
+            enemyHealth = 0;
+            enemyIsAlive = false;
+        }
+    }
+
+    public double calculateBlockedDamageEnemy(double damage) {
+        damage -= getDefense();
+
+        if (damage <= 0) {
+            damage = 0;
+        }
+
         return damage;
     }
+
+    public void displayHealthEnemy() {
+        System.out.println("Enemy Health: " + enemyHealth + "/" + enemyMaxHealth);
+    }
+
+    public abstract void enemyAttack(Player player);
 }

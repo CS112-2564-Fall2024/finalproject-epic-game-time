@@ -1,9 +1,13 @@
 package Controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+
+import java.awt.event.ActionListener;
 
 
 public class GameScreenController {
@@ -21,6 +25,48 @@ public class GameScreenController {
     ProgressBar playerHealthProgress;
     @FXML
     ProgressBar enemyHealthProgress;
+    @FXML
+    Button attackButton;
+    @FXML
+    Button blockButton;
+    @FXML
+    Button potionButton;
+
+    Game game;
+
+    public GameScreenController(Game game, Canvas canvas, Button attackButton, Button blockButton) {
+        this.canvas = canvas;
+        this.game = game;
+        this.attackButton = attackButton;
+        this.blockButton = blockButton;
+//        this.potionButton = potionButton;
+        initialize();
+    }
+
+    //TODO add text log for all info in game in bottom right corner of FXML
+
+    public void initialize() {
+        //canvas focues to capture input
+        canvas.setFocusTraversable(true);
+        canvas.requestFocus();
+
+        //setting up button actions
+        attackButton.setOnAction(this:: handleAttackButtonClick);
+        blockButton.setOnAction(this:: handleBlockButtonClick);
+//        potionButton.setOnAction(this:: handlePotionButtonClick);
+    }
+
+    public void handleAttackButtonClick(ActionEvent event) {
+        game.handlePlayerTurn("Attack");
+    }
+
+    public void handleBlockButtonClick(ActionEvent event) {
+        game.handlePlayerTurn("Block");
+    }
+
+    public void handlePotionButtonClick(ActionEvent event) {
+        game.handlePlayerTurn("Potion");
+    }
 
 
 

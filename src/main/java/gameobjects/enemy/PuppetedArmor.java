@@ -1,4 +1,15 @@
 package gameobjects.enemy;
 
-public class PuppetedArmor {
+import gameobjects.Player;
+
+public abstract class PuppetedArmor extends Enemy {
+
+    public PuppetedArmor() {
+        super("Puppeted Armor", 20,9,10);
+    }
+
+    @Override
+    public void enemyAttack(Player player) {
+        player.playerTakeDamage(getAttackDamage());
+    }
 }
