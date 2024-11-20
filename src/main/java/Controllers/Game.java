@@ -12,41 +12,39 @@ public class Game {
 
     public Game(Canvas canvas, GameScreenController controller) {
         this.controller = controller;
-
+        this.playerTurn = true;
         setUpGame();
-
-
+        startGame();
     }
 
     public void startGame() {
 
-        public boolean checkGame () {
-            if (currentEnemy.enemyIsAlive()) {
-                showStatsPage();
-                return false;
-            } else if (player.isAlive()) {
-                generateLoot();
-                advanceToNextRoom();
-                return false;
+        while (player.isAlive() && currentEnemy.enemyIsAlive()) {
+            if (playerTurn) {
+                handlePlayerTurn();
+            } else {
+                handleEnemyTurn();
             }
-            return true;
+            playerTurn = !playerTurn;
+            if (!checkGame()) {
+                break;
+            }
         }
     }
-        while(player.isAlive()&&currentEnemy.enemyIsAlive()) {
-        if (playerTurn) {
-            handlePlayerTurn();
-        } else {
-            handleEnemyTurn();
+
+    public boolean checkGame () {
+        if (currentEnemy.enemyIsAlive()) {
+            showStatsPage();
+            return false;
+        } else if (player.isAlive()) {
+            generateLoot();
+            advanceToNextRoom();
+            return false;
         }
-        playerTurn = !playerTurn;
-        if (!checkGame()) {
-            break;
-        }
+        return true;
     }
-}
 
     public static void handlePlayerTurn() {
-
 
     }
 
@@ -66,7 +64,7 @@ public class Game {
 
     }
 
-
+}
     /* Need to begin game after begin button is clicked on title screen
      * (START) player will always go first
      * need to create turned base system that loops until either player or enemy is dead
@@ -128,5 +126,5 @@ public class Game {
         If the player's health reaches zero, display the stats page.
         Provide an option to return to the main menu and restart the game.
         */
-}
+
 

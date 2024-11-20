@@ -67,8 +67,6 @@ public abstract class Enemy {
         return enemyIsAlive;
     }
 
-    public abstract void enemyAttack();
-
     public void enemyTakeDamage(double damage) {
         this.enemyHealth -= calculateBlockedDamageEnemy(damage);
 

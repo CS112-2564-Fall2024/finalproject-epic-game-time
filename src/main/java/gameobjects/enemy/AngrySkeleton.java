@@ -12,6 +12,5 @@ public abstract class AngrySkeleton extends Enemy {
     public void enemyAttack(Player player) {
         player.playerTakeDamage(getAttackDamage());
     }
-
     //TODO add special move type
 }
