@@ -2,7 +2,7 @@ package gameobjects.enemy;
 
 import gameobjects.Player;
 
-public abstract class CursedAutomation extends Enemy {
+public class CursedAutomation extends Enemy {
 
     public CursedAutomation() {
         super("Cursed Automation", 30,10,10);

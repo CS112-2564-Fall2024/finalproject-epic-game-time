@@ -2,7 +2,7 @@ package gameobjects.enemy;
 
 import gameobjects.Player;
 
-public abstract class Ogre extends Enemy {
+public class Ogre extends Enemy {
 
     public Ogre() {
         super("Ogre", 50,20,5);

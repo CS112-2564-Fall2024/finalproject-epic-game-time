@@ -2,7 +2,7 @@ package gameobjects.enemy;
 
 import gameobjects.Player;
 
-public abstract class PigButcher extends Enemy {
+public class PigButcher extends Enemy {
 
     public PigButcher() {
         super("Pig Butcher",40,15,10);

@@ -2,7 +2,7 @@ package gameobjects.enemy;
 
 import gameobjects.Player;
 
-public abstract class CannonCrew extends Enemy{
+public class CannonCrew extends Enemy{
 
     public CannonCrew() {
         super("Cannon Crew", 30,10,10);

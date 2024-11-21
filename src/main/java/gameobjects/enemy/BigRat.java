@@ -2,7 +2,7 @@ package gameobjects.enemy;
 
 import gameobjects.Player;
 
-public abstract class BigRat extends Enemy {
+public class BigRat extends Enemy {
 
     public BigRat() {
         super("Big Rat", 20,5,5);

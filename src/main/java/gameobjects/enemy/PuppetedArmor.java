@@ -2,7 +2,7 @@ package gameobjects.enemy;
 
 import gameobjects.Player;
 
-public abstract class PuppetedArmor extends Enemy {
+public class PuppetedArmor extends Enemy {
 
     public PuppetedArmor() {
         super("Puppeted Armor", 20,9,10);

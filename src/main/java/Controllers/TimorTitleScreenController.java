@@ -3,6 +3,7 @@ package Controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -46,8 +47,8 @@ public class TimorTitleScreenController {
             Scene gameplayScene = new Scene(root);
             newStage.setScene(gameplayScene);
 
-            // GameplayController controller = loader.getController();
-            // controller.setStage(stage);
+             GameScreenController controller = loader.getController();
+             controller.setStage(newStage);
 
 //            stage.setScene(gameplayScene);
 //            stage.show();

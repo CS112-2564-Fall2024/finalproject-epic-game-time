@@ -6,6 +6,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.stage.Stage;
 
 import java.awt.event.ActionListener;
 
@@ -33,6 +34,7 @@ public class GameScreenController {
     Button potionButton;
 
     Game game;
+    private Stage stage;
 
     public GameScreenController(Game game, Canvas canvas, Button attackButton, Button blockButton) {
         this.canvas = canvas;
@@ -46,6 +48,7 @@ public class GameScreenController {
     //TODO add text log for all info in game in bottom right corner of FXML
 
     public void initialize() {
+        game = new Game(canvas, this);
         //canvas focues to capture input
         canvas.setFocusTraversable(true);
         canvas.requestFocus();
@@ -68,6 +71,10 @@ public class GameScreenController {
     public void updateHealthUI() {
         playerHealthProgress.setProgress(game.player.getPlayerHealthPoints() / game.player.getPlayerMaxHealthPoints());
         enemyHealthProgress.setProgress(game.currentEnemy.getEnemyHealth() / game.currentEnemy.getEnemyMaxHealth());
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
 //    public void handlePotionButtonClick(ActionEvent event) {
