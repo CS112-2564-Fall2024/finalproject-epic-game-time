@@ -2,7 +2,7 @@ package gameobjects.enemy;
 
 import gameobjects.Player;
 
-public abstract class AngrySkeleton extends Enemy {
+public class AngrySkeleton extends Enemy {
 
     public AngrySkeleton() {
         super("Angry Skeleton", 15, 7,5);

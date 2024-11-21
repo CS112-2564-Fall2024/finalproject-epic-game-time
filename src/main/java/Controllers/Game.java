@@ -1,20 +1,34 @@
 package Controllers;
 
+import gameobjects.Armor;
 import gameobjects.Player;
+import gameobjects.Weapon;
+import gameobjects.enemy.AngrySkeleton;
 import gameobjects.enemy.Enemy;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ProgressBar;
+
+import java.util.Optional;
 
 public class Game {
     GameScreenController controller;
     private boolean playerTurn;
-    Player player;
     Enemy currentEnemy;
+    private String playerAction;
+
+    Weapon weapon = new Weapon ("dagger",10, Optional.of(0.0), "white");
+    Armor armor =  new Armor ("diamond", 4, Optional.of(0.0), "white");
+
+    Player player = new Player(10, weapon, armor);
+
+
 
     public Game(Canvas canvas, GameScreenController controller) {
         this.controller = controller;
         this.playerTurn = true;
-        setUpGame();
         startGame();
+        this.playerAction = "";
+        this.currentEnemy = new AngrySkeleton();
     }
 
     public void startGame() {
@@ -25,6 +39,7 @@ public class Game {
             } else {
                 handleEnemyTurn();
             }
+            controller.updateHealthUI();
             playerTurn = !playerTurn;
             if (!checkGame()) {
                 break;
@@ -44,8 +59,14 @@ public class Game {
         return true;
     }
 
-    public static void handlePlayerTurn() {
+    public  void handlePlayerTurn() {
+        if(playerAction.equals("Attack")) {
+            handleAttack();
+        } else if (playerAction.equals("Block")) {
+            handleBlock();
+        }
 
+        playerAction = "";
     }
 
     public static void handleEnemyTurn() {
@@ -63,6 +84,23 @@ public class Game {
     public static void advanceToNextRoom() {
 
     }
+
+    public void handleAttack() {
+        player.playerAttack(currentEnemy);
+    }
+//         TODO implement function for player to block their turn against enemy attack
+    public void handleBlock() {
+//        player.playerBlock(currentEnemy);
+    }
+
+    public String getPlayerAction() {
+        return playerAction;
+    }
+
+    public void setPlayerAction(String playerAction) {
+        this.playerAction = playerAction;
+    }
+
 
 }
     /* Need to begin game after begin button is clicked on title screen

@@ -57,16 +57,22 @@ public class GameScreenController {
     }
 
     public void handleAttackButtonClick(ActionEvent event) {
-        game.handlePlayerTurn("Attack");
+        game.setPlayerAction("Attack");
+        //maybe need check game logic here
     }
 
     public void handleBlockButtonClick(ActionEvent event) {
-        game.handlePlayerTurn("Block");
+        game.setPlayerAction("Block");
     }
 
-    public void handlePotionButtonClick(ActionEvent event) {
-        game.handlePlayerTurn("Potion");
+    public void updateHealthUI() {
+        playerHealthProgress.setProgress(game.player.getPlayerHealthPoints() / game.player.getPlayerMaxHealthPoints());
+        enemyHealthProgress.setProgress(game.currentEnemy.getEnemyHealth() / game.currentEnemy.getEnemyMaxHealth());
     }
+
+//    public void handlePotionButtonClick(ActionEvent event) {
+//        game.handlePlayerTurn("Potion");
+//    }
 
 
 
