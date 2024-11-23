@@ -1,5 +1,6 @@
 package Controllers;
 
+import gameobjects.enemy.AngrySkeleton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
@@ -8,81 +9,83 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 
-import java.awt.event.ActionListener;
-
-
 public class GameScreenController {
     @FXML
-    Canvas canvas;
+    private Canvas canvas;
     @FXML
-    Label roomNumberLabel;
+    private Label roomNumberLabel;
     @FXML
-    Label currentDamageLabel;
+    private Label currentDamageLabel;
     @FXML
-    Label currentCritLabel;
+    private Label currentCritLabel;
     @FXML
-    Label currentBlockLabel;
+    private Label currentBlockLabel;
     @FXML
-    ProgressBar playerHealthProgress;
+    private ProgressBar playerHealthProgress;
     @FXML
-    ProgressBar enemyHealthProgress;
+    private ProgressBar enemyHealthProgress;
     @FXML
-    Button attackButton;
+    private Button attackButton;
     @FXML
-    Button blockButton;
+    private Button blockButton;
     @FXML
-    Button potionButton;
+    private Button potionButton;
 
-    Game game;
+    private Game game;
     private Stage stage;
 
-    public GameScreenController(Game game, Canvas canvas, Button attackButton, Button blockButton) {
-        this.canvas = canvas;
-        this.game = game;
-        this.attackButton = attackButton;
-        this.blockButton = blockButton;
-//        this.potionButton = potionButton;
-        initialize();
+    // No-argument constructor needed by FXMLLoader
+    public GameScreenController() {
+        // No explicit initial setup required here
     }
 
-    //TODO add text log for all info in game in bottom right corner of FXML
-
+    @FXML
     public void initialize() {
-        game = new Game(canvas, this);
-        //canvas focues to capture input
-        canvas.setFocusTraversable(true);
-        canvas.requestFocus();
+        // Initialize the game instance only if canvas is available
+        if (canvas != null) {
+            game = new Game(canvas, this);
 
-        //setting up button actions
-        attackButton.setOnAction(this:: handleAttackButtonClick);
-        blockButton.setOnAction(this:: handleBlockButtonClick);
-//        potionButton.setOnAction(this:: handlePotionButtonClick);
+            // Set the canvas to focus when the scene is loaded
+            canvas.setFocusTraversable(true);
+            canvas.requestFocus();
+
+            // Initialize the UI components according to the game state
+            updateHealthUI();
+
+            // Connect UI buttons with their action handlers
+            attackButton.setOnAction(this::handleAttackButtonClick);
+            blockButton.setOnAction(this::handleBlockButtonClick);
+            // Optional: Connect the potion button if it is being used
+            // potionButton.setOnAction(this::handlePotionButtonClick);
+        }
     }
 
-    public void handleAttackButtonClick(ActionEvent event) {
+    @FXML
+    private void handleAttackButtonClick(ActionEvent event) {
+        // Set player action to attack and possibly update game logic
         game.setPlayerAction("Attack");
-        //maybe need check game logic here
     }
 
-    public void handleBlockButtonClick(ActionEvent event) {
+    @FXML
+    private void handleBlockButtonClick(ActionEvent event) {
+        // Set player action to block
         game.setPlayerAction("Block");
     }
 
+    @FXML
     public void updateHealthUI() {
-        playerHealthProgress.setProgress(game.player.getPlayerHealthPoints() / game.player.getPlayerMaxHealthPoints());
-        enemyHealthProgress.setProgress(game.currentEnemy.getEnemyHealth() / game.currentEnemy.getEnemyMaxHealth());
+        // Ensure health progress bars are set correctly with safe checks on game and its properties
+        if (game != null && game.player != null && game.currentEnemy != null) {
+            playerHealthProgress.setProgress(
+                    (double)game.player.getPlayerHealthPoints() / game.player.getPlayerMaxHealthPoints()
+            );
+            enemyHealthProgress.setProgress(
+                    (double)game.currentEnemy.getEnemyHealth() / game.currentEnemy.getEnemyMaxHealth()
+            );
+        }
     }
 
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-
-//    public void handlePotionButtonClick(ActionEvent event) {
-//        game.handlePlayerTurn("Potion");
-//    }
-
-
-
-
-
 }

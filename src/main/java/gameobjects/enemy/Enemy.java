@@ -1,6 +1,7 @@
 package gameobjects.enemy;
 
 import gameobjects.Player;
+import javafx.scene.image.Image;
 
 public abstract class Enemy {
 
@@ -62,6 +63,8 @@ public abstract class Enemy {
     public void setAttackDamage() {
         this.attackDamage = attackDamage;
     }
+
+//    public abstract Image getImage();
 
     public boolean enemyIsAlive() {
         return enemyIsAlive;

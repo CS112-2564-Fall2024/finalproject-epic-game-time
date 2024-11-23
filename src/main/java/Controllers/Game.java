@@ -5,41 +5,41 @@ import gameobjects.Player;
 import gameobjects.Weapon;
 import gameobjects.enemy.AngrySkeleton;
 import gameobjects.enemy.Enemy;
+import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.canvas.GraphicsContext;
 
 import java.util.Optional;
 
 public class Game {
     GameScreenController controller;
     private boolean playerTurn;
-    Enemy currentEnemy;
     private String playerAction;
 
     Weapon weapon = new Weapon ("dagger",10, Optional.of(0.0), "white");
-    Armor armor =  new Armor ("diamond", 4, Optional.of(0.0), "white");
+    Armor armor =  new Armor ("leather", 4, Optional.of(0.0), "white");
 
     Player player = new Player(10, weapon, armor);
+    Enemy currentEnemy = new AngrySkeleton();
 
-
+    GraphicsContext gc;
 
     public Game(Canvas canvas, GameScreenController controller) {
         this.controller = controller;
         this.playerTurn = true;
-        startGame();
         this.playerAction = "";
-        this.currentEnemy = new AngrySkeleton();
+        startGame();
     }
 
     public void startGame() {
 
         while (player.isAlive() && currentEnemy.enemyIsAlive()) {
+            controller.updateHealthUI();
             if (playerTurn) {
                 handlePlayerTurn();
             } else {
                 handleEnemyTurn();
             }
-            controller.updateHealthUI();
             playerTurn = !playerTurn;
             if (!checkGame()) {
                 break;
@@ -49,11 +49,11 @@ public class Game {
 
     public boolean checkGame () {
         if (currentEnemy.enemyIsAlive()) {
-            showStatsPage();
+//            showStatsPage();
             return false;
         } else if (player.isAlive()) {
-            generateLoot();
-            advanceToNextRoom();
+//            generateLoot();
+//            advanceToNextRoom();
             return false;
         }
         return true;
@@ -101,8 +101,26 @@ public class Game {
         this.playerAction = playerAction;
     }
 
+    public void setCurrentEnemy(Enemy currentEnemy) {
+        this.currentEnemy = currentEnemy;
+    }
+
+
 
 }
+
+//        gc = canvas.getGraphicsContext2D();
+//
+//        AnimationTimer timer = new AnimationTimer() {
+//            @Override
+//            public void handle(long now) {
+//                gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+//                gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+//
+//                startGame();
+//
+//            }
+//        };
     /* Need to begin game after begin button is clicked on title screen
      * (START) player will always go first
      * need to create turned base system that loops until either player or enemy is dead

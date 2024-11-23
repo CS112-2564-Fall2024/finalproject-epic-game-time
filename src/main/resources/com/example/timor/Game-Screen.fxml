@@ -9,15 +9,17 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="398.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.GameScreenController">
+<?import javafx.scene.layout.Pane?>
+
+<Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.GameScreenController">
    <children>
       <Canvas fx:id="canvas" height="667.0" layoutY="1.0" width="1030.0" />
-      <ImageView id="background" fitHeight="700.0" fitWidth="1187.0" layoutX="-151.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView id="background" fitHeight="908.0" fitWidth="1612.0" layoutX="-406.0" layoutY="-3.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../images/stage1.png" />
          </image></ImageView>
-      <ImageView id="enemyDisplay" fitHeight="227.0" fitWidth="254.0" layoutX="627.0" layoutY="114.0" pickOnBounds="true" preserveRatio="true" />
-      <ImageView id="playerDisplay" fitHeight="227.0" fitWidth="261.0" layoutX="66.0" layoutY="334.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView id="enemyDisplay" fitHeight="377.0" fitWidth="341.0" layoutX="684.0" layoutY="96.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView id="playerDisplay" fitHeight="377.0" fitWidth="330.0" layoutX="34.0" layoutY="399.0" pickOnBounds="true" preserveRatio="true" />
       <Label fx:id="roomNumberLabel" layoutX="24.0" layoutY="30.0" prefHeight="17.0" prefWidth="119.0" text="Room:" textFill="WHITE">
          <font>
             <Font name="System Italic" size="24.0" />
@@ -38,11 +40,11 @@
             <Font name="System Italic" size="24.0" />
          </font>
       </Label>
-      <ProgressBar fx:id="playerHealthProgress" layoutX="96.0" layoutY="583.0" prefWidth="200.0" progress="0.0" />
-      <ProgressBar fx:id="enemyHealthProgress" layoutX="654.0" layoutY="357.0" prefWidth="200.0" progress="0.0" />
-      <Button fx:id="attackButton" layoutX="336.0" layoutY="505.0" mnemonicParsing="false" prefHeight="87.0" prefWidth="102.0" text="Attack" />
-      <Button fx:id="potionButton" layoutX="576.0" layoutY="505.0" mnemonicParsing="false" prefHeight="87.0" prefWidth="102.0" text="Potion" />
-      <Button fx:id="blockButton" layoutX="456.0" layoutY="505.0" mnemonicParsing="false" prefHeight="87.0" prefWidth="102.0" text="Block" />
+      <ProgressBar fx:id="playerHealthProgress" layoutX="96.0" layoutY="820.0" prefWidth="200.0" progress="0.0" />
+      <ProgressBar fx:id="enemyHealthProgress" layoutX="755.0" layoutY="509.0" prefWidth="200.0" progress="0.0" />
+      <Button fx:id="attackButton" layoutX="385.0" layoutY="733.0" mnemonicParsing="false" prefHeight="87.0" prefWidth="102.0" text="Attack" />
+      <Button fx:id="potionButton" layoutX="652.0" layoutY="733.0" mnemonicParsing="false" prefHeight="87.0" prefWidth="102.0" text="Potion" />
+      <Button fx:id="blockButton" layoutX="515.0" layoutY="733.0" mnemonicParsing="false" prefHeight="87.0" prefWidth="102.0" text="Block" />
       <Label fx:id="weaponLabel" alignment="CENTER" layoutX="76.0" layoutY="227.0" prefHeight="107.0" prefWidth="80.0" text="Label" textFill="WHITE" />
       <Label fx:id="armorLabel" alignment="CENTER" layoutX="156.0" layoutY="227.0" prefHeight="107.0" prefWidth="80.0" text="Label" textFill="WHITE" />
       <Label fx:id="potionLabel" alignment="CENTER" layoutX="236.0" layoutY="227.0" prefHeight="107.0" prefWidth="80.0" text="Label" textFill="WHITE" />
@@ -50,4 +52,4 @@
       <Label alignment="CENTER" layoutX="164.0" layoutY="227.0" prefHeight="17.0" prefWidth="64.0" text="Armor" textFill="WHITE" />
       <Label alignment="CENTER" layoutX="244.0" layoutY="227.0" prefHeight="17.0" prefWidth="64.0" text="Potion" textFill="WHITE" />
    </children>
-</AnchorPane>
+</Pane>
