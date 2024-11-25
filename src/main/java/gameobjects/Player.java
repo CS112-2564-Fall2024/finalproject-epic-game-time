@@ -40,6 +40,14 @@ public class Player {
         this.playerMaxHealthPoints = playerMaxHealthPoints;
     }
 
+    public Weapon getEquippedWeapon() {
+        return equippedWeapon;
+    }
+
+    private void setEquippedWeapon(Weapon equippedWeapon) {
+        this.equippedWeapon = equippedWeapon;
+    }
+
     //boolean to check player status alive or dead (true or false)
     public boolean isAlive() {
         return isAlive;
@@ -80,10 +88,8 @@ public class Player {
     //calculated attack based on weapon damage, and its crit percent
     //Crit does 1.5x damage
     public void playerAttack(Enemy enemy) {
-        double damage = equippedWeapon.calculateDamage();
-        enemy.enemyTakeDamage(damage);
-        double calculatedDamageAfterDefense = enemy.calculateBlockedDamageEnemy(damage);
-        System.out.println("Attacks with " + equippedWeapon.getName() + " dealing " + calculatedDamageAfterDefense + " damage.");
+        double damage = equippedWeapon.calculateDamage();  // Get weapon damage
+        enemy.enemyTakeDamage(damage);  // Let the enemy handle its damage and blocking logicDamageAfterDefense + " damage.");
     }
 
     //if player block reduces damage by 75%
@@ -91,9 +97,11 @@ public class Player {
         this.playerHealthPoints -= enemyDamage * 0.75;
     }
     //Testing method to display current health
+
     public void displayHealthPoints() {
         System.out.println("Player Health Points: " + playerHealthPoints + "/" + playerMaxHealthPoints);
     }
+
     public String toString() {
         return "{ Health: " + playerHealthPoints + ", Weapon: " + equippedWeapon.getName() + ", Armor: " + equippedArmor.getName() + " }";
     }

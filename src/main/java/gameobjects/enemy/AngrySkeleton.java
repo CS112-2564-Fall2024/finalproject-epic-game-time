@@ -10,7 +10,7 @@ public class AngrySkeleton extends Enemy {
     public AngrySkeleton() {
         super("Angry Skeleton", 15, 7,5);
         enemyIsAlive = true;
-        skeletonImage = new Image("src/main/resources/images/skeleton.png");
+        //skeletonImage = new Image("src/main/resources/images/skeleton.png");
 
     }
 

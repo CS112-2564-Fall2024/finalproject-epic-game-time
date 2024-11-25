@@ -30,6 +30,8 @@ public class GameScreenController {
     private Button blockButton;
     @FXML
     private Button potionButton;
+    @FXML
+    private Label enemyNameLocation;
 
     private Game game;
     private Stage stage;
@@ -50,7 +52,8 @@ public class GameScreenController {
             canvas.requestFocus();
 
             // Initialize the UI components according to the game state
-            updateHealthUI();
+           handleUIUpdates();
+//           game.startGame();
 
             // Connect UI buttons with their action handlers
             attackButton.setOnAction(this::handleAttackButtonClick);
@@ -62,14 +65,33 @@ public class GameScreenController {
 
     @FXML
     private void handleAttackButtonClick(ActionEvent event) {
-        // Set player action to attack and possibly update game logic
-        game.setPlayerAction("Attack");
+        if (game != null && game.currentEnemy != null) {
+            game.setPlayerAction("Attack");
+            System.out.println("Attacking " + game.currentEnemy.getName() + " For " + game.player.getEquippedWeapon().getAttackDamage() + " damage");
+        } else {
+            System.out.println("Error: Game or currentEnemy is null");
+        }
     }
 
     @FXML
     private void handleBlockButtonClick(ActionEvent event) {
         // Set player action to block
         game.setPlayerAction("Block");
+    }
+
+    public void handleUIUpdates(){
+        updateHealthUI();
+//        enemyNameLocation.setText("Test");
+        updateEnemyName();
+    }
+
+    public void updateEnemyName() {
+        if (game.currentEnemy != null) {
+            enemyNameLocation.setText(game.currentEnemy.getName());
+        } else {
+            enemyNameLocation.setText("No enemy available");
+        }
+
     }
 
     @FXML

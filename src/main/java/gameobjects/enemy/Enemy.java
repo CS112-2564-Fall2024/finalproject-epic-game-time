@@ -71,7 +71,11 @@ public abstract class Enemy {
     }
 
     public void enemyTakeDamage(double damage) {
-        this.enemyHealth -= calculateBlockedDamageEnemy(damage);
+        // Calculate blocked damage (e.g., based on armor, defense, etc.)
+        double finalDamage = calculateBlockedDamageEnemy(damage);  // Block damage and calculate final damage
+
+        // Apply the final damage to enemy health
+        this.enemyHealth -= finalDamage;
 
         if (enemyHealth <= 0) {
             enemyHealth = 0;

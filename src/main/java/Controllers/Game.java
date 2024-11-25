@@ -1,46 +1,54 @@
 package Controllers;
 
+import com.example.timor.GameLogic;
 import gameobjects.Armor;
 import gameobjects.Player;
 import gameobjects.Weapon;
 import gameobjects.enemy.AngrySkeleton;
+import gameobjects.enemy.BigRat;
 import gameobjects.enemy.Enemy;
+import gameobjects.enemy.LittleTweaker;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.Optional;
+import java.util.Random;
 
 public class Game {
     GameScreenController controller;
     private boolean playerTurn;
     private String playerAction;
+    private GameLogic logic;
 
-    Weapon weapon = new Weapon ("dagger",10, Optional.of(0.0), "white");
+    Weapon weapon = new Weapon ("dagger",4, Optional.of(0.0), "white");
     Armor armor =  new Armor ("leather", 4, Optional.of(0.0), "white");
 
     Player player = new Player(10, weapon, armor);
-    Enemy currentEnemy = new AngrySkeleton();
-
-    GraphicsContext gc;
+    public Enemy currentEnemy;
+//    Enemy currentEnemy = new AngrySkeleton();
 
     public Game(Canvas canvas, GameScreenController controller) {
         this.controller = controller;
         this.playerTurn = true;
         this.playerAction = "";
+
+        //spawn random enemy
+        this.currentEnemy = spawnRandomBasicEnemy();
+
         startGame();
     }
 
     public void startGame() {
 
         while (player.isAlive() && currentEnemy.enemyIsAlive()) {
-            controller.updateHealthUI();
             if (playerTurn) {
                 handlePlayerTurn();
             } else {
                 handleEnemyTurn();
             }
             playerTurn = !playerTurn;
+
             if (!checkGame()) {
                 break;
             }
@@ -59,7 +67,7 @@ public class Game {
         return true;
     }
 
-    public  void handlePlayerTurn() {
+    public void handlePlayerTurn() {
         if(playerAction.equals("Attack")) {
             handleAttack();
         } else if (playerAction.equals("Block")) {
@@ -69,8 +77,8 @@ public class Game {
         playerAction = "";
     }
 
-    public static void handleEnemyTurn() {
-
+    public void handleEnemyTurn() {
+        currentEnemy.enemyAttack(player);
     }
 
     public static void showStatsPage() {
@@ -86,7 +94,10 @@ public class Game {
     }
 
     public void handleAttack() {
-        player.playerAttack(currentEnemy);
+
+        if (currentEnemy != null) {
+            player.playerAttack(currentEnemy);
+        }
     }
 //         TODO implement function for player to block their turn against enemy attack
     public void handleBlock() {
@@ -105,7 +116,25 @@ public class Game {
         this.currentEnemy = currentEnemy;
     }
 
+    public Enemy getCurrentEnemy() {
+        return currentEnemy;
+    }
 
+    public Enemy spawnRandomBasicEnemy() {
+        Random rand = new Random();
+        int randomChoice = rand.nextInt(3); // Generates a number from 0 to 2
+        Enemy enemy = switch (randomChoice) {
+            case 0 -> new AngrySkeleton();
+            case 1 -> new BigRat();
+            case 2 -> new LittleTweaker();
+            default ->
+                // This is a fallback just in case
+                    new AngrySkeleton(); // Default choice
+        };
+
+        return enemy;
+
+    }
 
 }
 
