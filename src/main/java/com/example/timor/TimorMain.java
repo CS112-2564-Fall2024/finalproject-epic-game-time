@@ -12,7 +12,7 @@ public class TimorMain extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Timor-title-screen.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TimorMain.class.getResource("Timor-title-screen.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         TimorTitleScreenController controller = fxmlLoader.getController();
         controller.setStage(stage);

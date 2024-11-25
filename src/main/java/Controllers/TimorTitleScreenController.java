@@ -1,5 +1,6 @@
 package Controllers;
 
+import com.example.timor.TimorMain;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -40,7 +41,7 @@ public class TimorTitleScreenController {
 
     private void handleGameStart(ActionEvent event)  {
         System.out.println("Game start");
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("src/main/resources/com/example/timor/Game-Screen.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(TimorMain.class.getResource("Game-Screen.fxml"));
 
         try {
             //Load the game screen file

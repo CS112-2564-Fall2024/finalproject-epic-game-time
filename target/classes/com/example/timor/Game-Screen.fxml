@@ -10,6 +10,7 @@
 <?import javafx.scene.text.Font?>
 
 <?import javafx.scene.layout.Pane?>
+
 <Pane minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.GameScreenController">
    <children>
       <Canvas fx:id="canvas" height="667.0" layoutY="1.0" width="1030.0" />
