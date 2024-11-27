@@ -44,6 +44,8 @@ public class Player {
         return equippedWeapon;
     }
 
+    public Armor getEquippedArmor() { return equippedArmor; }
+
     private void setEquippedWeapon(Weapon equippedWeapon) {
         this.equippedWeapon = equippedWeapon;
     }
@@ -89,7 +91,7 @@ public class Player {
     //Crit does 1.5x damage
     public void playerAttack(Enemy enemy) {
         double damage = equippedWeapon.calculateDamage();  // Get weapon damage
-        enemy.enemyTakeDamage(damage);  // Let the enemy handle its damage and blocking logicDamageAfterDefense + " damage.");
+        enemy.enemyTakeDamage(damage);// Let the enemy handle its damage and blocking logicDamageAfterDefense + " damage.");
     }
 
     //if player block reduces damage by 75%

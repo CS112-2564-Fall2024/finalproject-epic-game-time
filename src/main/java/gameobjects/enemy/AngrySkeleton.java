@@ -5,12 +5,12 @@ import javafx.scene.image.Image;
 
 public class AngrySkeleton extends Enemy {
 
-    Image skeletonImage;
+    private final Image skeletonImage;
 
     public AngrySkeleton() {
         super("Angry Skeleton", 15, 7,5);
         enemyIsAlive = true;
-        //skeletonImage = new Image("src/main/resources/images/skeleton.png");
+        this.skeletonImage = new Image(getClass().getResourceAsStream("/images/skeleton.png"));
 
     }
 
@@ -20,10 +20,10 @@ public class AngrySkeleton extends Enemy {
         return super.enemyIsAlive; // use inherited isAlive from Enemy
     }
 
-//    @Override
-//    public Image getImage() {
-//        return skeletonImage;
-//    }
+    @Override
+    public Image getImage() {
+        return skeletonImage;
+    }
 
     //potential method in game to set image
 //    public void updateEnemyImage(Enemy enemy) {

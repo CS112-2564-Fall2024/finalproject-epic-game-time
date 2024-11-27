@@ -64,7 +64,7 @@ public abstract class Enemy {
         this.attackDamage = attackDamage;
     }
 
-//    public abstract Image getImage();
+    public abstract Image getImage();
 
     public boolean enemyIsAlive() {
         return enemyIsAlive;

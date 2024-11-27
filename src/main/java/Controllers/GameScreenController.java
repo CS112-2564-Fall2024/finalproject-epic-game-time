@@ -1,12 +1,12 @@
 package Controllers;
 
-import gameobjects.enemy.AngrySkeleton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
 public class GameScreenController {
@@ -32,6 +32,13 @@ public class GameScreenController {
     private Button potionButton;
     @FXML
     private Label enemyNameLocation;
+    @FXML
+    private ImageView enemyDisplay;
+    @FXML
+    private Label weaponLabel;
+    @FXML
+    private Label armorLabel;
+
 
     private Game game;
     private Stage stage;
@@ -53,7 +60,6 @@ public class GameScreenController {
 
             // Initialize the UI components according to the game state
            handleUIUpdates();
-//           game.startGame();
 
             // Connect UI buttons with their action handlers
             attackButton.setOnAction(this::handleAttackButtonClick);
@@ -66,8 +72,29 @@ public class GameScreenController {
     @FXML
     private void handleAttackButtonClick(ActionEvent event) {
         if (game != null && game.currentEnemy != null) {
-            game.setPlayerAction("Attack");
-            System.out.println("Attacking " + game.currentEnemy.getName() + " For " + game.player.getEquippedWeapon().getAttackDamage() + " damage");
+
+            System.out.println("button confirmation");
+
+            if(game.getPlayerTurn()) {
+
+               game.setPlayerInput(1);
+               game.handlePlayerTurn();
+//               game.setIsActionComplete(true);
+//                System.out.println("Attacking " + game.currentEnemy.getName() + " For " + game.player.getEquippedWeapon().getAttackDamage() + " damage");
+
+                //further debugging
+                System.out.println("PlayerInput set to: " + game.getPlayerInput());
+                System.out.println("Action completed: " + game.getIsActionComplete());
+
+
+
+
+
+
+            } else {
+                System.out.println("Not your turn yet");
+            }
+
         } else {
             System.out.println("Error: Game or currentEnemy is null");
         }
@@ -81,8 +108,9 @@ public class GameScreenController {
 
     public void handleUIUpdates(){
         updateHealthUI();
-//        enemyNameLocation.setText("Test");
         updateEnemyName();
+        updateEnemyPicture();
+        updateEquippedGear();
     }
 
     public void updateEnemyName() {
@@ -92,6 +120,21 @@ public class GameScreenController {
             enemyNameLocation.setText("No enemy available");
         }
 
+    }
+
+    public void updateEquippedGear() {
+        weaponLabel.setText(game.player.getEquippedWeapon().getName());
+        armorLabel.setText(game.player.getEquippedArmor().getName());
+    }
+
+    public void updateEnemyPicture() {
+        if (game.currentEnemy != null) {
+            enemyDisplay.setImage(game.currentEnemy.getImage());
+
+            enemyDisplay.setPreserveRatio(true);
+            enemyDisplay.setFitWidth(650);
+            enemyDisplay.setFitHeight(650);
+        }
     }
 
     @FXML
@@ -109,5 +152,9 @@ public class GameScreenController {
 
     public void setStage(Stage stage) {
         this.stage = stage;
+    }
+
+    public Button getAttackButton() {
+        return attackButton;
     }
 }

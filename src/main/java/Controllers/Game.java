@@ -4,13 +4,8 @@ import com.example.timor.GameLogic;
 import gameobjects.Armor;
 import gameobjects.Player;
 import gameobjects.Weapon;
-import gameobjects.enemy.AngrySkeleton;
-import gameobjects.enemy.BigRat;
-import gameobjects.enemy.Enemy;
-import gameobjects.enemy.LittleTweaker;
-import javafx.animation.AnimationTimer;
+import gameobjects.enemy.*;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 
 import java.util.Optional;
 import java.util.Random;
@@ -20,18 +15,22 @@ public class Game {
     private boolean playerTurn;
     private String playerAction;
     private GameLogic logic;
+    private boolean isActionComplete;
+    private int playerInput;
 
-    Weapon weapon = new Weapon ("dagger",4, Optional.of(0.0), "white");
+
+    Weapon weapon = new Weapon ("dagger",15, Optional.of(0.0), "white");
     Armor armor =  new Armor ("leather", 4, Optional.of(0.0), "white");
 
     Player player = new Player(10, weapon, armor);
     public Enemy currentEnemy;
-//    Enemy currentEnemy = new AngrySkeleton();
 
     public Game(Canvas canvas, GameScreenController controller) {
         this.controller = controller;
         this.playerTurn = true;
         this.playerAction = "";
+        this.isActionComplete = false;
+        this.playerInput = 0;
 
         //spawn random enemy
         this.currentEnemy = spawnRandomBasicEnemy();
@@ -42,18 +41,42 @@ public class Game {
     public void startGame() {
 
         while (player.isAlive() && currentEnemy.enemyIsAlive()) {
-            if (playerTurn) {
-                handlePlayerTurn();
+
+            controller.updateHealthUI();
+
+
+
+            if (playerTurn) { // handle player action
+                //debugging help
+                System.out.println("Player Turn: " + playerTurn);
+//                handlePlayerTurn();
+
+                //only switch turn if player action complete
+                if (isActionComplete) {
+                    System.out.println("Action Complete, Switching Turn");
+                    playerTurn = false;
+                    System.out.println("After switching, Player Turn: " + playerTurn);// Debugging output
+                } else {
+                    System.out.println("Player is still performing action");
+                }
+
             } else {
+                System.out.println("Enemy Turn: " + playerTurn);
                 handleEnemyTurn();
+                playerTurn = true;
+                System.out.println("After switching, Player Turn: " + playerTurn);  // Debugging output
             }
-            playerTurn = !playerTurn;
+
+//            playerTurn = !playerTurn;
+
 
             if (!checkGame()) {
                 break;
             }
         }
     }
+
+
 
     public boolean checkGame () {
         if (currentEnemy.enemyIsAlive()) {
@@ -68,17 +91,32 @@ public class Game {
     }
 
     public void handlePlayerTurn() {
-        if(playerAction.equals("Attack")) {
-            handleAttack();
-        } else if (playerAction.equals("Block")) {
-            handleBlock();
-        }
+        //reset action flag at beginning of turn
+        isActionComplete = false;
 
-        playerAction = "";
+        if (playerTurn) {
+            System.out.println("player turn to act");  // Debugging message
+
+            // Handle player's actions (Attack, Block, etc.)
+            if (playerInput == 1) {
+                handleAttack();
+                isActionComplete = true;
+                System.out.println("Player Attacked");
+                System.out.println(currentEnemy.getName() + " current health " + currentEnemy.getEnemyHealth() + " / " + currentEnemy.getEnemyMaxHealth());
+            } else if (playerInput == 2) {
+                handleBlock();
+            }
+
+            playerInput = 0;  // Reset player action for next turn
+
+
+            controller.updateHealthUI();
+        }
     }
 
     public void handleEnemyTurn() {
         currentEnemy.enemyAttack(player);
+
     }
 
     public static void showStatsPage() {
@@ -95,8 +133,20 @@ public class Game {
 
     public void handleAttack() {
 
-        if (currentEnemy != null) {
+        Weapon equippedWeapon = player.getEquippedWeapon();
+
+        if (equippedWeapon != null) {
+            // Get damage from weapon
+            System.out.println("Attacking " + currentEnemy.getName() + " for " + player.getEquippedWeapon().getAttackDamage() + " damage.");
+
+            // Apply damage to the enemy
             player.playerAttack(currentEnemy);
+
+            System.out.println("Dealt " + player.getEquippedWeapon().getAttackDamage() + " damage to " + currentEnemy.getName());
+            // Update UI with new health values
+            controller.updateHealthUI();
+        } else {
+            System.out.println("No weapon equipped! Cannot attack.");
         }
     }
 //         TODO implement function for player to block their turn against enemy attack
@@ -120,13 +170,40 @@ public class Game {
         return currentEnemy;
     }
 
+    public boolean getPlayerTurn() {
+        return playerTurn;
+    }
+
+    public void setPlayerTurn(boolean playerTurn) {
+        this.playerTurn = playerTurn;
+    }
+
+    public boolean getIsActionComplete() {
+        return isActionComplete;
+    }
+
+    public void setIsActionComplete(boolean isActionComplete) {
+        this.isActionComplete = isActionComplete;
+    }
+
+    public int getPlayerInput() {
+        return playerInput;
+    }
+
+    public void setPlayerInput(int playerInput) {
+        this.playerInput = playerInput;
+    }
+
     public Enemy spawnRandomBasicEnemy() {
         Random rand = new Random();
-        int randomChoice = rand.nextInt(3); // Generates a number from 0 to 2
+        int randomChoice = rand.nextInt(6); // Generates a number from 0 to 2
         Enemy enemy = switch (randomChoice) {
             case 0 -> new AngrySkeleton();
             case 1 -> new BigRat();
             case 2 -> new LittleTweaker();
+            case 3 -> new PuppetedArmor();
+            case 4 -> new RollingGolem();
+            case 5 -> new ShyGuy();
             default ->
                 // This is a fallback just in case
                     new AngrySkeleton(); // Default choice

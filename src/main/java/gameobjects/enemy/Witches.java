@@ -1,4 +1,4 @@
 package gameobjects.enemy;
 
-public class Witches {
-}
+//public class Witches {
+//}

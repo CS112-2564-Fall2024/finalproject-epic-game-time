@@ -1,11 +1,20 @@
 package gameobjects.enemy;
 
 import gameobjects.Player;
+import javafx.scene.image.Image;
 
 public class BigRat extends Enemy {
 
+    private final Image bigratImage;
+
     public BigRat() {
         super("Big Rat", 20,5,5);
+        this.bigratImage = new Image(getClass().getResourceAsStream("/images/rat.png"));
+    }
+
+    @Override
+    public Image getImage() {
+        return bigratImage;
     }
 
     @Override
