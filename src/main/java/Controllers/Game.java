@@ -11,15 +11,21 @@ import java.util.Optional;
 import java.util.Random;
 
 public class Game {
+
+    //consider enumeration to hold a current game state with a switch statement to handle the turn
+    enum GameState {
+        PLAYER_TURN, ENEMY_TURN;
+    }
+
+
     GameScreenController controller;
     private boolean playerTurn;
     private String playerAction;
-    private GameLogic logic;
     private boolean isActionComplete;
     private int playerInput;
 
 
-    Weapon weapon = new Weapon ("dagger",15, Optional.of(0.0), "white");
+    Weapon weapon = new Weapon ("Default Weapon",15, Optional.of(0.0), "white");
     Armor armor =  new Armor ("leather", 4, Optional.of(0.0), "white");
 
     Player player = new Player(10, weapon, armor);
@@ -44,17 +50,15 @@ public class Game {
 
             controller.updateHealthUI();
 
-
-
             if (playerTurn) { // handle player action
                 //debugging help
                 System.out.println("Player Turn: " + playerTurn);
-//                handlePlayerTurn();
+                handlePlayerTurn();
 
                 //only switch turn if player action complete
                 if (isActionComplete) {
                     System.out.println("Action Complete, Switching Turn");
-                    playerTurn = false;
+                    playerTurn = !playerTurn;
                     System.out.println("After switching, Player Turn: " + playerTurn);// Debugging output
                 } else {
                     System.out.println("Player is still performing action");
@@ -63,7 +67,7 @@ public class Game {
             } else {
                 System.out.println("Enemy Turn: " + playerTurn);
                 handleEnemyTurn();
-                playerTurn = true;
+                playerTurn = !playerTurn;
                 System.out.println("After switching, Player Turn: " + playerTurn);  // Debugging output
             }
 
@@ -196,7 +200,7 @@ public class Game {
 
     public Enemy spawnRandomBasicEnemy() {
         Random rand = new Random();
-        int randomChoice = rand.nextInt(6); // Generates a number from 0 to 2
+        int randomChoice = rand.nextInt(6); // Generates a number from 0 to 5
         Enemy enemy = switch (randomChoice) {
             case 0 -> new AngrySkeleton();
             case 1 -> new BigRat();

@@ -70,7 +70,7 @@ public class GameScreenController {
     }
 
     @FXML
-    private void handleAttackButtonClick(ActionEvent event) {
+    public void handleAttackButtonClick(ActionEvent event) {
         if (game != null && game.currentEnemy != null) {
 
             System.out.println("button confirmation");
@@ -78,18 +78,8 @@ public class GameScreenController {
             if(game.getPlayerTurn()) {
 
                game.setPlayerInput(1);
-               game.handlePlayerTurn();
 //               game.setIsActionComplete(true);
-//                System.out.println("Attacking " + game.currentEnemy.getName() + " For " + game.player.getEquippedWeapon().getAttackDamage() + " damage");
-
-                //further debugging
-                System.out.println("PlayerInput set to: " + game.getPlayerInput());
-                System.out.println("Action completed: " + game.getIsActionComplete());
-
-
-
-
-
+//                System.out.println("Attacking " + game.currentEnemy.getName() + " For " + game.player.getEquippedWeapon().getAttackDamage() + " damage")
 
             } else {
                 System.out.println("Not your turn yet");
