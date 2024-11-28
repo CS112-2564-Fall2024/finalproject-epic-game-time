@@ -99,9 +99,18 @@ public class Player {
         enemy.enemyTakeDamage(damage);// Let the enemy handle its damage and blocking logicDamageAfterDefense + " damage.");
     }
 
-    //if player block reduces damage by 75%
+    //if player block reduces damage by 50% + the block percentage of current equipped armor
     public void playerBlock(double enemyDamage) {
-        this.playerHealthPoints -= enemyDamage * 0.75;
+        this.playerHealthPoints -= enemyDamage * (0.5 + getEquippedArmor().getArmorValue());
+
+        if(playerHealthPoints <= 0) {
+            playerHealthPoints = 0;
+        }
+    }
+
+    public double playerBlockValue (double enemyDamage) {
+        double playerBlockValue = enemyDamage * (0.5 + getEquippedArmor().getArmorValue());
+        return playerBlockValue;
     }
     //Testing method to display current health
 

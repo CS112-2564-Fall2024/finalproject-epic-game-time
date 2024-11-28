@@ -60,7 +60,7 @@ public abstract class Enemy {
         return attackDamage;
     }
 
-    public void setAttackDamage() {
+    public void setAttackDamage(int attackDamage) {
         this.attackDamage = attackDamage;
     }
 
@@ -82,6 +82,12 @@ public abstract class Enemy {
             enemyIsAlive = false;
         }
     }
+
+    //TODO need to figure out why damage during block phase is astronomically fucking high
+    //TODO might have to create a function built from scratch to determine the damege, consider player defense
+//    public double enemyDamageValue() {
+//        double enemyDamageValue = getAttackDamage()
+//    }
 
     public double calculateBlockedDamageEnemy(double damage) {
         damage -= getDefense();

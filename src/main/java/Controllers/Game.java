@@ -23,27 +23,32 @@ public class Game {
         ENEMY_TURN,
         PLAYER_WIN,
         GAME_OVER,
-        PLAYER_LOOT_OPTIONS;
+        PLAYER_LOOT_OPTIONS,
+        PLAYER_BLOCK,
+        PLAYER_ATTACK;
     }
 
 
     GameScreenController controller;
     private GameState currentState = GameState.PLAYER_TURN;
     private int currentRoomNumber;
+    private int modifierLevel;
+    private int modifierCheck;
 
     Weapon droppedWeapon = null;
     Armor droppedArmor = null;
 
     Weapon startingWeapon = new Weapon ("Basic Dagger",50, Optional.of(0.0), "white");
-    Armor startingArmor =  new Armor ("Basic Cloth", 4, Optional.of(0.0), "white");
+    Armor startingArmor =  new Armor ("Basic Cloth", 50, Optional.of(0.0), "white");
 
     Player player = new Player(10, startingWeapon, startingArmor);
     public Enemy currentEnemy;
 
     public Game(Canvas canvas, GameScreenController controller) {
         this.controller = controller;
-
+        this.modifierLevel = 0;
         this.currentRoomNumber = 1;
+        this.modifierCheck = 5;
 
         //spawn random enemy
         this.currentEnemy = spawnRandomBasicEnemy();
@@ -70,6 +75,8 @@ public class Game {
             case GAME_OVER:
                 System.out.println("Game Over!");
                 break;
+            case PLAYER_BLOCK:
+
             case PLAYER_LOOT_OPTIONS:
                 generateLoot();
                 enableLootButton();
@@ -84,7 +91,7 @@ public class Game {
     }
 
     public void takePlayerTurn() {
-        if (currentState == GameState.PLAYER_TURN) {
+        if (currentState == GameState.PLAYER_ATTACK) {
             player.playerAttack(currentEnemy);
             System.out.println("Player dealt " + player.getEquippedWeapon().getAttackDamage() + " damage");
 
@@ -99,8 +106,24 @@ public class Game {
                 setState(GameState.ENEMY_TURN);
                 switchTurnOrder();
             }
+        } else if (currentState == GameState.PLAYER_BLOCK) {
+            System.out.println("Enemy Attacking");
+            player.playerBlock(currentEnemy.getAttackDamage());
+            System.out.println(currentEnemy.getName() + " dealt " + player.playerBlockValue(currentEnemy.getAttackDamage()));
+
+
+            if (player.getPlayerHealthPoints() <= 0) {
+                currentState = GameState.GAME_OVER;
+            } else {
+                setState(GameState.PLAYER_TURN);
+                //add a pause to simulate the enemy attack
+                PauseTransition pause = new PauseTransition(Duration.seconds(1));  // 1 second pause
+                pause.setOnFinished(event -> switchTurnOrder());
+                pause.play();
+            }
         }
     }
+
 
     public void handleEnemyTurn() {
         System.out.println("Enemy Attacking");
@@ -141,6 +164,8 @@ public class Game {
     public void advanceRoom() {
         this.currentEnemy = spawnRandomBasicEnemy();
         currentRoomNumber++;
+        applyModifier();
+        increaseDifficulty();
         controller.handleUIUpdates();
         player.setPlayerHealthPoints(player.getPlayerMaxHealthPoints());
         currentState = GameState.PLAYER_TURN;
@@ -162,6 +187,40 @@ public class Game {
             case 1:
                 this.droppedArmor  = randomArmorDrop();
                 break;
+        }
+    }
+
+    public void applyModifier() {
+        //increases the difficulty starting at room 5 and increases every 5 levels
+        //updates the room label and updates the corresponding modifier level as it increases
+
+        if(currentRoomNumber >= modifierCheck) {
+            modifierLevel++;
+            modifierCheck += 5;
+            controller.updateDifficultyUI();
+        }
+    }
+
+    public void increaseDifficulty() {
+        //will increase the damage and defense by 5% every 5 stages subject to change after testing
+        double increaseDamage = 0.05;
+        double increaseDefense = 0.05;
+        double increaseHealth = 0.075;
+
+        //calculate the new damage/defense/health only if the modifier level is 1 or greater, based on the current
+        //modifier level does a calculation to increase all stats of the enemy
+
+        if (modifierLevel != 0) {
+            //Calculate the new levels based on current modifier level
+            double newAttack = currentEnemy.getAttackDamage() *  (1 + (increaseDamage * modifierLevel));
+            double newDefense = currentEnemy.getDefense() *  (1 + (increaseDefense * modifierLevel));
+            double newMaxHealth = currentEnemy.getEnemyMaxHealth() * (1 + (increaseHealth * modifierLevel));
+
+            //set the new values to the enemy stats
+            currentEnemy.setAttackDamage((int)newAttack);
+            currentEnemy.setDefense((int)newDefense);
+            currentEnemy.setEnemyMaxHealth(newMaxHealth);
+            currentEnemy.setEnemyHealth(newMaxHealth);
         }
     }
 
@@ -200,7 +259,9 @@ public class Game {
         return droppedArmor;
     }
 
-
+    public int getModifierLevel() {
+        return modifierLevel;
+    }
 
     public void setState(GameState newState) {
         currentState = newState;

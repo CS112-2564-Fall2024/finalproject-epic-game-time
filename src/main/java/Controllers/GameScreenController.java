@@ -6,6 +6,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -18,9 +19,7 @@ public class GameScreenController {
     @FXML
     private Label currentDamageLabel;
     @FXML
-    private Label currentCritLabel;
-    @FXML
-    private Label currentBlockLabel;
+    private Label currentDefenseLabel;
     @FXML
     private ProgressBar playerHealthProgress;
     @FXML
@@ -49,10 +48,15 @@ public class GameScreenController {
     private Button yesEquipLootButton;
     @FXML
     private Button noEquipLootButton;
+    @FXML
+    private ImageView difficultyImageView;
+    @FXML
+    private Label difficultyLabel;
 
 
     private Game game;
     private Stage stage;
+    private final Image difficultyImage = new Image(getClass().getResourceAsStream("/images/Skull_Modifier.png"));
 
     // No-argument constructor needed by FXMLLoader
     public GameScreenController() {
@@ -85,12 +89,16 @@ public class GameScreenController {
     @FXML
     public void handleAttackButtonClick(ActionEvent event) {
         if (game != null && game.currentEnemy != null) {
+            game.setState(Game.GameState.PLAYER_ATTACK);
             game.takePlayerTurn();
         }
     }
     @FXML
     private void handleBlockButtonClick(ActionEvent event) {
-        // Set player action to block
+        if(game != null && game.currentEnemy != null) {
+            game.setState(Game.GameState.PLAYER_BLOCK);
+            game.takePlayerTurn();
+        }
     }
 
     public void handleUIUpdates(){
@@ -99,10 +107,9 @@ public class GameScreenController {
         updateEnemyPicture();
         updateEquippedGear();
         updateRoomCounter();
-        updateCritCounter();
+        updateCurrentDefense();
         updateDamageCounter();
         lootDisplayReset();
-//        displayTextTest();
     }
 
     public void updateRoomCounter() {
@@ -113,8 +120,8 @@ public class GameScreenController {
         currentDamageLabel.setText("Damage: " + game.player.getEquippedWeapon().getAttackDamage());
     }
 
-    public void updateCritCounter() {
-        currentCritLabel.setText("Crit Chance: " + game.player.getEquippedWeapon().getCritChance() + "%");
+    public void updateCurrentDefense() {
+        currentDefenseLabel.setText("Defense: " + game.player.getEquippedArmor().getArmorValue());
     }
 
     public void updateEnemyName() {
@@ -155,6 +162,11 @@ public class GameScreenController {
             playerHealthLabel.setText(game.player.getPlayerHealthPoints() + "/" + game.player.getPlayerMaxHealthPoints());
             enemyHealthLabel.setText(game.currentEnemy.getEnemyHealth()+ "/" + game.currentEnemy.getEnemyMaxHealth());
         }
+    }
+
+    public void updateDifficultyUI() {
+        difficultyImageView.setImage(difficultyImage);
+        difficultyLabel.setText("x" + game.getModifierLevel());
     }
 
     public void handleYesEquipLoot(ActionEvent event) {
