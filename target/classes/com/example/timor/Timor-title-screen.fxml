@@ -9,7 +9,10 @@
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.TimorTitleScreenController">
    <children>
       <Canvas fx:id="canvas" height="400.0" width="600.0" />
-      <ImageView fitHeight="400.0" fitWidth="600.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fitHeight="918.0" fitWidth="1253.0" layoutX="-53.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../images/castle%20background.png" />
+         </image></ImageView>
       <Button fx:id="startButton" layoutX="538.0" layoutY="400.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="115.0">
          <graphic>
             <ImageView fitHeight="57.0" fitWidth="108.0" pickOnBounds="true" preserveRatio="true">
@@ -28,7 +31,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <ImageView fitHeight="105.0" fitWidth="196.0" layoutX="502.0" layoutY="166.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="105.0" fitWidth="196.0" layoutX="63.0" layoutY="200.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../images/Title.png" />
          </image>

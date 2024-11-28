@@ -81,6 +81,11 @@ public class Player {
         System.out.println("Equipped the " + weapon.getName());
     }
 
+    public void equipArmor(Armor armor) {
+        this.equippedArmor = armor;
+        System.out.println("Equipped the " + armor.getName());
+    }
+
     //TODO not final way for switch weapon
     public void switchWeapon(Weapon newWeapon) {
         this.equippedWeapon = newWeapon;

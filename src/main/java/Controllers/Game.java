@@ -5,197 +5,118 @@ import gameobjects.Armor;
 import gameobjects.Player;
 import gameobjects.Weapon;
 import gameobjects.enemy.*;
+import javafx.animation.PauseTransition;
 import javafx.scene.canvas.Canvas;
+import javafx.util.Duration;
 
 import java.util.Optional;
 import java.util.Random;
+
+import static gameobjects.LootRandomizer.randomArmorDrop;
+import static gameobjects.LootRandomizer.randomWeaponDrop;
 
 public class Game {
 
     //consider enumeration to hold a current game state with a switch statement to handle the turn
     enum GameState {
-        PLAYER_TURN, ENEMY_TURN;
+        PLAYER_TURN,
+        ENEMY_TURN,
+        PLAYER_WIN,
+        GAME_OVER,
+        PLAYER_LOOT_OPTIONS;
     }
 
 
     GameScreenController controller;
-    private boolean playerTurn;
-    private String playerAction;
-    private boolean isActionComplete;
-    private int playerInput;
+    private GameState currentState = GameState.PLAYER_TURN;
+    private int currentRoomNumber;
 
+    Weapon droppedWeapon = null;
+    Armor droppedArmor = null;
 
-    Weapon weapon = new Weapon ("Default Weapon",15, Optional.of(0.0), "white");
-    Armor armor =  new Armor ("leather", 4, Optional.of(0.0), "white");
+    Weapon startingWeapon = new Weapon ("Basic Dagger",50, Optional.of(0.0), "white");
+    Armor startingArmor =  new Armor ("Basic Cloth", 4, Optional.of(0.0), "white");
 
-    Player player = new Player(10, weapon, armor);
+    Player player = new Player(10, startingWeapon, startingArmor);
     public Enemy currentEnemy;
 
     public Game(Canvas canvas, GameScreenController controller) {
         this.controller = controller;
-        this.playerTurn = true;
-        this.playerAction = "";
-        this.isActionComplete = false;
-        this.playerInput = 0;
+
+        this.currentRoomNumber = 1;
 
         //spawn random enemy
         this.currentEnemy = spawnRandomBasicEnemy();
+        setState(GameState.PLAYER_TURN);
 
-        startGame();
+        //start the game
+        switchTurnOrder();
+
     }
 
-    public void startGame() {
+    public void switchTurnOrder() {
+        controller.updateHealthUI();
 
-        while (player.isAlive() && currentEnemy.enemyIsAlive()) {
-
-            controller.updateHealthUI();
-
-            if (playerTurn) { // handle player action
-                //debugging help
-                System.out.println("Player Turn: " + playerTurn);
-                handlePlayerTurn();
-
-                //only switch turn if player action complete
-                if (isActionComplete) {
-                    System.out.println("Action Complete, Switching Turn");
-                    playerTurn = !playerTurn;
-                    System.out.println("After switching, Player Turn: " + playerTurn);// Debugging output
-                } else {
-                    System.out.println("Player is still performing action");
-                }
-
-            } else {
-                System.out.println("Enemy Turn: " + playerTurn);
-                handleEnemyTurn();
-                playerTurn = !playerTurn;
-                System.out.println("After switching, Player Turn: " + playerTurn);  // Debugging output
-            }
-
-//            playerTurn = !playerTurn;
-
-
-            if (!checkGame()) {
+        switch (currentState) {
+            case PLAYER_TURN:
+                controller.getAttackButton().setDisable(false);
+                disableLootButton();
+                System.out.println("\nChoose an option");
                 break;
-            }
+            case ENEMY_TURN:
+                controller.getAttackButton().setDisable(true);
+                handleEnemyTurn();
+                break;
+            case GAME_OVER:
+                System.out.println("Game Over!");
+                break;
+            case PLAYER_LOOT_OPTIONS:
+                generateLoot();
+                enableLootButton();
+                controller.updateLootText();
+                break;
+            case PLAYER_WIN:
+                System.out.println("Player Win advancing room");
+                resetDrops();
+                advanceRoom();
+                break;
         }
     }
 
+    public void takePlayerTurn() {
+        if (currentState == GameState.PLAYER_TURN) {
+            player.playerAttack(currentEnemy);
+            System.out.println("Player dealt " + player.getEquippedWeapon().getAttackDamage() + " damage");
 
-
-    public boolean checkGame () {
-        if (currentEnemy.enemyIsAlive()) {
-//            showStatsPage();
-            return false;
-        } else if (player.isAlive()) {
-//            generateLoot();
-//            advanceToNextRoom();
-            return false;
-        }
-        return true;
-    }
-
-    public void handlePlayerTurn() {
-        //reset action flag at beginning of turn
-        isActionComplete = false;
-
-        if (playerTurn) {
-            System.out.println("player turn to act");  // Debugging message
-
-            // Handle player's actions (Attack, Block, etc.)
-            if (playerInput == 1) {
-                handleAttack();
-                isActionComplete = true;
-                System.out.println("Player Attacked");
-                System.out.println(currentEnemy.getName() + " current health " + currentEnemy.getEnemyHealth() + " / " + currentEnemy.getEnemyMaxHealth());
-            } else if (playerInput == 2) {
-                handleBlock();
+            // Check if the enemy is defeated
+            if (currentEnemy.getEnemyHealth() <= 0) {
+                currentState = GameState.PLAYER_LOOT_OPTIONS;
+                switchTurnOrder();
+            } else {
+                // After player's turn, switch to enemy's turn
+                currentState = GameState.ENEMY_TURN;
+                // Disable the button until the next player turn
+                setState(GameState.ENEMY_TURN);
+                switchTurnOrder();
             }
-
-            playerInput = 0;  // Reset player action for next turn
-
-
-            controller.updateHealthUI();
         }
     }
 
     public void handleEnemyTurn() {
+        System.out.println("Enemy Attacking");
         currentEnemy.enemyAttack(player);
+        System.out.println(currentEnemy.getName() + " dealt " + currentEnemy.getAttackDamage() + " damage");
 
-    }
-
-    public static void showStatsPage() {
-
-    }
-
-    public static void generateLoot() {
-
-    }
-
-    public static void advanceToNextRoom() {
-
-    }
-
-    public void handleAttack() {
-
-        Weapon equippedWeapon = player.getEquippedWeapon();
-
-        if (equippedWeapon != null) {
-            // Get damage from weapon
-            System.out.println("Attacking " + currentEnemy.getName() + " for " + player.getEquippedWeapon().getAttackDamage() + " damage.");
-
-            // Apply damage to the enemy
-            player.playerAttack(currentEnemy);
-
-            System.out.println("Dealt " + player.getEquippedWeapon().getAttackDamage() + " damage to " + currentEnemy.getName());
-            // Update UI with new health values
-            controller.updateHealthUI();
+        if(player.getPlayerHealthPoints() <= 0) {
+            currentState = GameState.GAME_OVER;
+            System.out.println("Enemy wins!");
         } else {
-            System.out.println("No weapon equipped! Cannot attack.");
+            currentState = GameState.PLAYER_TURN;
+
+            PauseTransition pause = new PauseTransition(Duration.seconds(1));  // 1 second pause
+            pause.setOnFinished(event -> switchTurnOrder());
+            pause.play();
         }
-    }
-//         TODO implement function for player to block their turn against enemy attack
-    public void handleBlock() {
-//        player.playerBlock(currentEnemy);
-    }
-
-    public String getPlayerAction() {
-        return playerAction;
-    }
-
-    public void setPlayerAction(String playerAction) {
-        this.playerAction = playerAction;
-    }
-
-    public void setCurrentEnemy(Enemy currentEnemy) {
-        this.currentEnemy = currentEnemy;
-    }
-
-    public Enemy getCurrentEnemy() {
-        return currentEnemy;
-    }
-
-    public boolean getPlayerTurn() {
-        return playerTurn;
-    }
-
-    public void setPlayerTurn(boolean playerTurn) {
-        this.playerTurn = playerTurn;
-    }
-
-    public boolean getIsActionComplete() {
-        return isActionComplete;
-    }
-
-    public void setIsActionComplete(boolean isActionComplete) {
-        this.isActionComplete = isActionComplete;
-    }
-
-    public int getPlayerInput() {
-        return playerInput;
-    }
-
-    public void setPlayerInput(int playerInput) {
-        this.playerInput = playerInput;
     }
 
     public Enemy spawnRandomBasicEnemy() {
@@ -215,6 +136,86 @@ public class Game {
 
         return enemy;
 
+    }
+
+    public void advanceRoom() {
+        this.currentEnemy = spawnRandomBasicEnemy();
+        currentRoomNumber++;
+        controller.handleUIUpdates();
+        player.setPlayerHealthPoints(player.getPlayerMaxHealthPoints());
+        currentState = GameState.PLAYER_TURN;
+        switchTurnOrder();
+    }
+
+    public void resetDrops() {
+        this.droppedArmor = null;
+        this.droppedWeapon = null;
+    }
+
+    public void generateLoot() {
+        Random rand = new Random();
+        int randomChoice = rand.nextInt(2);
+        switch (randomChoice) {
+            case 0:
+                this.droppedWeapon = randomWeaponDrop();
+                break;
+            case 1:
+                this.droppedArmor  = randomArmorDrop();
+                break;
+        }
+    }
+
+    public static void showStatsPage() {
+
+    }
+
+    public void enableLootButton() {
+        controller.getYesEquipLootButton().setVisible(true);
+        controller.getNoEquipLootButton().setVisible(true);
+    }
+
+    public void disableLootButton() {
+        controller.getYesEquipLootButton().setVisible(false);
+        controller.getNoEquipLootButton().setVisible(false);
+    }
+
+//         TODO implement function for player to block their turn against enemy attack
+    public void handleBlock() {
+//        player.playerBlock(currentEnemy);
+    }
+
+    public void setCurrentEnemy(Enemy currentEnemy) {
+        this.currentEnemy = currentEnemy;
+    }
+
+    public Enemy getCurrentEnemy() {
+        return currentEnemy;
+    }
+
+    public Weapon getDroppedWeapon() {
+        return droppedWeapon;
+    }
+
+    public Armor getDroppedArmor() {
+        return droppedArmor;
+    }
+
+
+
+    public void setState(GameState newState) {
+        currentState = newState;
+    }
+
+    public GameState getState() {
+        return currentState;
+    }
+
+    public int getCurrentRoomNumber() {
+        return currentRoomNumber;
+    }
+
+    public void setCurrentRoomNumber(int currentRoomNumber) {
+        this.currentRoomNumber = currentRoomNumber;
     }
 
 }

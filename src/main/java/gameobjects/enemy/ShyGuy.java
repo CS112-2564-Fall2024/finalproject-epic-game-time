@@ -9,7 +9,7 @@ public class ShyGuy extends Enemy {
 
     public ShyGuy() {
         super("Shy Guy", 15,10,5);
-        this.shyguyImage = new Image(getClass().getResourceAsStream("/images/shyguyu.png"));
+        this.shyguyImage = new Image(getClass().getResourceAsStream("/images/ShyGuyUpdate.png"));
     }
 
     @Override
