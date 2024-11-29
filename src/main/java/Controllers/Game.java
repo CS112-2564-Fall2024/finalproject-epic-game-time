@@ -1,14 +1,21 @@
 package Controllers;
 
 import com.example.timor.GameLogic;
+import com.example.timor.TimorMain;
 import gameobjects.Armor;
 import gameobjects.Player;
 import gameobjects.Weapon;
 import gameobjects.enemy.*;
 import javafx.animation.PauseTransition;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Random;
 
@@ -17,7 +24,7 @@ import static gameobjects.LootRandomizer.randomWeaponDrop;
 
 public class Game {
 
-    //consider enumeration to hold a current game state with a switch statement to handle the turn
+   //enumeration to hold the current game state and to be able to switch after the turn is handled
     enum GameState {
         PLAYER_TURN,
         ENEMY_TURN,
@@ -34,6 +41,7 @@ public class Game {
     private int currentRoomNumber;
     private int modifierLevel;
     private int modifierCheck;
+    static Stage stage;
 
     Weapon droppedWeapon = null;
     Armor droppedArmor = null;
@@ -64,7 +72,7 @@ public class Game {
 
         switch (currentState) {
             case PLAYER_TURN:
-                controller.getAttackButton().setDisable(false);
+                enableButtons();
                 disableLootButton();
                 System.out.println("\nChoose an option");
                 break;
@@ -75,11 +83,10 @@ public class Game {
             case GAME_OVER:
                 System.out.println("Game Over!");
                 break;
-            case PLAYER_BLOCK:
-
             case PLAYER_LOOT_OPTIONS:
                 generateLoot();
                 enableLootButton();
+                disableButtons();
                 controller.updateLootText();
                 break;
             case PLAYER_WIN:
@@ -142,6 +149,8 @@ public class Game {
         }
     }
 
+
+    //sets current enemy based on random number and setting the case to its assigned enemy
     public Enemy spawnRandomBasicEnemy() {
         Random rand = new Random();
         int randomChoice = rand.nextInt(6); // Generates a number from 0 to 5
@@ -167,16 +176,20 @@ public class Game {
         applyModifier();
         increaseDifficulty();
         controller.handleUIUpdates();
+        //sets player health back to max health subject to change once a potion feature is added
         player.setPlayerHealthPoints(player.getPlayerMaxHealthPoints());
         currentState = GameState.PLAYER_TURN;
         switchTurnOrder();
     }
 
+    //used to make the dropped loot back to null
     public void resetDrops() {
         this.droppedArmor = null;
         this.droppedWeapon = null;
     }
 
+
+    //chooses either the armor or weapon and sets it to a random item based upon its rarity
     public void generateLoot() {
         Random rand = new Random();
         int randomChoice = rand.nextInt(2);
@@ -219,30 +232,59 @@ public class Game {
             //set the new values to the enemy stats
             currentEnemy.setAttackDamage((int)newAttack);
             currentEnemy.setDefense((int)newDefense);
-            currentEnemy.setEnemyMaxHealth(newMaxHealth);
-            currentEnemy.setEnemyHealth(newMaxHealth);
+            currentEnemy.setEnemyMaxHealth(Math.round(newMaxHealth));
+            currentEnemy.setEnemyHealth(Math.round(newMaxHealth));
+        }
+    }
+    //TODO still need to add a page to transition to the end stage screen which will have a return button that '
+    //will display rooms cleared and have a return button to bring back the player to the title screen also
+    // need to add screen switches from end screen back to title screen and repeat
+    public static void showStatsPage() {
+        System.out.println("Game start");
+        FXMLLoader fxmlLoader = new FXMLLoader(TimorMain.class.getResource("Game-Screen.fxml"));
+
+        try {
+            //Load the game screen file
+            Parent root = fxmlLoader.load();
+
+            //creates the new scene
+            GameScreenController controller = fxmlLoader.getController();
+            Scene scene = new Scene(root);
+            // Retrieve the stage
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            controller.setStage(stage);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public static void showStatsPage() {
-
-    }
-
+    //enables loot buttons
     public void enableLootButton() {
         controller.getYesEquipLootButton().setVisible(true);
         controller.getNoEquipLootButton().setVisible(true);
     }
 
+    //disables loot buttons
     public void disableLootButton() {
         controller.getYesEquipLootButton().setVisible(false);
         controller.getNoEquipLootButton().setVisible(false);
     }
 
-//         TODO implement function for player to block their turn against enemy attack
-    public void handleBlock() {
-//        player.playerBlock(currentEnemy);
+    //enable loot buttons
+    public void enableButtons() {
+        controller.getAttackButton().setVisible(true);
+        controller.getBlockButton().setVisible(true);
     }
 
+    //disable loot buttons
+    public void disableButtons() {
+        controller.getAttackButton().setVisible(false);
+        controller.getBlockButton().setVisible(false);
+    }
+
+    //Assortment of all the required getters and setters
     public void setCurrentEnemy(Enemy currentEnemy) {
         this.currentEnemy = currentEnemy;
     }

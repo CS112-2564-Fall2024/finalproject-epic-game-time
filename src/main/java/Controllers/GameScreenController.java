@@ -270,4 +270,8 @@ public class GameScreenController {
     public Button getNoEquipLootButton() {
         return noEquipLootButton;
     }
+
+    public Button getBlockButton() {
+        return blockButton;
+    }
 }
