@@ -8,7 +8,7 @@ public class PuppetedArmor extends Enemy {
     private final Image armorImage;
 
     public PuppetedArmor() {
-        super("Puppeted Armor", 20,9,10);
+        super("Puppeted Armor", 12,6,0);
         this.armorImage = new Image(getClass().getResourceAsStream("/images/armor.png"));
     }
 

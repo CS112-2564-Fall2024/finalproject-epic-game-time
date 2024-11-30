@@ -8,7 +8,7 @@ public class RollingGolem extends Enemy {
     private final Image rollingGolemImage;
 
     public RollingGolem() {
-        super("Rolling Golem", 15, 10, 10);
+        super("Rolling Golem", 12, 6, 0);
         this.rollingGolemImage = new Image(getClass().getResourceAsStream("/images/RollingGolem.png"));
     }
 

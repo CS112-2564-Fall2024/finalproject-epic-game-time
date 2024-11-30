@@ -8,7 +8,7 @@ public class ShyGuy extends Enemy {
     private final Image shyguyImage;
 
     public ShyGuy() {
-        super("Shy Guy", 15,10,5);
+        super("Shy Guy", 12,6,0);
         this.shyguyImage = new Image(getClass().getResourceAsStream("/images/ShyGuyUpdate.png"));
     }
 

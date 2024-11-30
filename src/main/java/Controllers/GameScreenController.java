@@ -52,6 +52,8 @@ public class GameScreenController {
     private ImageView difficultyImageView;
     @FXML
     private Label difficultyLabel;
+    @FXML
+    private Label potionLabel;
 
 
     private Game game;
@@ -81,8 +83,7 @@ public class GameScreenController {
             blockButton.setOnAction(this::handleBlockButtonClick);
             yesEquipLootButton.setOnAction((this::handleYesEquipLoot));
             noEquipLootButton.setOnAction(this::handleNoEquipLoot);
-            // Optional: Connect the potion button if it is being used
-            // potionButton.setOnAction(this::handlePotionButtonClick);
+            potionButton.setOnAction(this::handlePotionClick);
         }
     }
 
@@ -97,7 +98,20 @@ public class GameScreenController {
     private void handleBlockButtonClick(ActionEvent event) {
         if(game != null && game.currentEnemy != null) {
             game.setState(Game.GameState.PLAYER_BLOCK);
-            game.takePlayerTurn();
+            game.playerBlock();
+        }
+    }
+
+    public void handlePotionClick(ActionEvent event) {
+        //only use potion if potions are available
+        if(game.getPotionCount() != 0) {
+            game.potionHeal();
+
+            //switch to enemy turn and continue
+            game.setState(Game.GameState.ENEMY_TURN);
+            game.switchTurnOrder();
+        } else {
+            System.out.println("No potions");
         }
     }
 
@@ -110,6 +124,7 @@ public class GameScreenController {
         updateCurrentDefense();
         updateDamageCounter();
         lootDisplayReset();
+        updatePotionCount();
     }
 
     public void updateRoomCounter() {
@@ -136,6 +151,10 @@ public class GameScreenController {
     public void updateEquippedGear() {
         weaponLabel.setText(game.player.getEquippedWeapon().getName());
         armorLabel.setText(game.player.getEquippedArmor().getName());
+    }
+
+    public void updatePotionCount() {
+        potionLabel.setText("Total: " + game.getPotionCount());
     }
 
     public void updateEnemyPicture() {
@@ -273,5 +292,9 @@ public class GameScreenController {
 
     public Button getBlockButton() {
         return blockButton;
+    }
+
+    public Button getPotionButton() {
+        return potionButton;
     }
 }

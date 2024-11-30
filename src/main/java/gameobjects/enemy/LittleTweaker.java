@@ -8,7 +8,7 @@ public class LittleTweaker extends Enemy{
     private final Image littleTweakerImage;
 
     public LittleTweaker(){
-        super("Little Tweaker",10,6,5);
+        super("Little Tweaker",10,4,0);
         this.littleTweakerImage = new Image(getClass().getResourceAsStream("/images/little witch.png"));
     }
 

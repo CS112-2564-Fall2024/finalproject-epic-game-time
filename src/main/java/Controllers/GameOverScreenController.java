@@ -16,7 +16,7 @@ public class GameOverScreenController {
     public Game game;
 
     public void initialize() {
-        returnButton.setOnAction(this::handleReturnButtonClick);
+//        returnButton.setOnAction(this::handleReturnButtonClick);
     }
 
     public void updateRoomsCleared() {

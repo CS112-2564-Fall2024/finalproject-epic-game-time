@@ -101,18 +101,14 @@ public class Player {
 
     //if player block reduces damage by 50% + the block percentage of current equipped armor minus the armor rating
     public void playerBlock(double enemyDamage) {
-        double calculatedDamage = (enemyDamage * (0.5 + getEquippedArmor().getBlockPercentage().orElse(0.0))
-                - getEquippedArmor().getArmorValue());
-
-        //if damage is less then or equal to 0 then set the value to 1 to apply 1 damage to the enemy
-        if(calculatedDamage <= 0) {
-            calculatedDamage = 1;
-        }
+        double calculatedDamage = (enemyDamage * (0.5 + getEquippedArmor().getBlockPercentage().orElse(0.0)));
 
         //set enemy health to 0 if it goes below 0
-        this.playerHealthPoints -= calculatedDamage;
+        playerTakeDamage((int) calculatedDamage);
+
         if(playerHealthPoints <= 0) {
             playerHealthPoints = 0;
+            isAlive = false;
         }
     }
 
@@ -122,7 +118,7 @@ public class Player {
                 - getEquippedArmor().getArmorValue());
 
         if (playerBlockValue <= 0) {
-            playerBlockValue = 1;
+            playerBlockValue = 0;
         }
 
         return playerBlockValue;

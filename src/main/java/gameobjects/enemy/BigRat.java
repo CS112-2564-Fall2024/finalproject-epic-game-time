@@ -8,7 +8,7 @@ public class BigRat extends Enemy {
     private final Image bigratImage;
 
     public BigRat() {
-        super("Big Rat", 20,5,5);
+        super("Big Rat", 12,5,0);
         this.bigratImage = new Image(getClass().getResourceAsStream("/images/rat.png"));
     }
 

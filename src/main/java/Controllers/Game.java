@@ -42,25 +42,28 @@ public class Game {
     private int modifierLevel;
     private int modifierCheck;
     static Stage stage;
+    private int potionCount;
 
     Weapon droppedWeapon = null;
     Armor droppedArmor = null;
 
-    Weapon startingWeapon = new Weapon ("Basic Dagger",50, Optional.of(0.0), "white");
-    Armor startingArmor =  new Armor ("Basic Cloth", 50, Optional.of(0.0), "white");
+    //default 2 attack, 3 defense
+    Weapon startingWeapon = new Weapon ("Basic Dagger",2, Optional.of(0.0), "white");
+    Armor startingArmor =  new Armor ("Basic Cloth", 3, Optional.of(0.0), "white");
 
-    Player player = new Player(10, startingWeapon, startingArmor);
+    Player player = new Player(30, startingWeapon, startingArmor);
     public Enemy currentEnemy;
 
     public Game(Canvas canvas, GameScreenController controller) {
         this.controller = controller;
         this.modifierLevel = 0;
         this.currentRoomNumber = 1;
-        this.modifierCheck = 5;
+        this.modifierCheck = 10;
+        this.potionCount = 0;
 
         //spawn random enemy
         this.currentEnemy = spawnRandomBasicEnemy();
-        setState(GameState.PLAYER_TURN);
+        this.currentState = GameState.PLAYER_TURN;
 
         //start the game
         switchTurnOrder();
@@ -72,27 +75,27 @@ public class Game {
 
         switch (currentState) {
             case PLAYER_TURN:
-                enableButtons();
                 disableLootButton();
                 System.out.println("\nChoose an option");
                 break;
             case ENEMY_TURN:
-                controller.getAttackButton().setDisable(true);
                 handleEnemyTurn();
                 break;
             case GAME_OVER:
                 System.out.println("Game Over!");
                 break;
             case PLAYER_LOOT_OPTIONS:
+                resetDrops();
                 generateLoot();
+                generatePotion();
                 enableLootButton();
                 disableButtons();
                 controller.updateLootText();
                 break;
             case PLAYER_WIN:
                 System.out.println("Player Win advancing room");
-                resetDrops();
                 advanceRoom();
+                enableButtons();
                 break;
         }
     }
@@ -110,24 +113,27 @@ public class Game {
                 // After player's turn, switch to enemy's turn
                 currentState = GameState.ENEMY_TURN;
                 // Disable the button until the next player turn
-                setState(GameState.ENEMY_TURN);
+                controller.updateHealthUI();
                 switchTurnOrder();
             }
-        } else if (currentState == GameState.PLAYER_BLOCK) {
+        }
+    }
+
+    public void playerBlock() {
+        if (currentState == GameState.PLAYER_BLOCK) {
             System.out.println("Enemy Attacking");
             player.playerBlock(currentEnemy.getAttackDamage());
-            System.out.println(currentEnemy.getName() + " dealt " + player.playerBlockValue(currentEnemy.getAttackDamage()));
-
+            System.out.println(currentEnemy.getName() + " dealt " + player.playerBlockValue(currentEnemy.getAttackDamage()) + " damage");
+            controller.updateHealthUI();
 
             if (player.getPlayerHealthPoints() <= 0) {
                 currentState = GameState.GAME_OVER;
-            } else {
-                setState(GameState.PLAYER_TURN);
-                //add a pause to simulate the enemy attack
-                PauseTransition pause = new PauseTransition(Duration.seconds(1));  // 1 second pause
-                pause.setOnFinished(event -> switchTurnOrder());
-                pause.play();
+                System.out.println("Enemy Wins!");
             }
+        } else {
+            setState(GameState.PLAYER_TURN);
+            //add a pause to simulate the enemy attack
+            switchTurnOrder();
         }
     }
 
@@ -176,10 +182,10 @@ public class Game {
         applyModifier();
         increaseDifficulty();
         controller.handleUIUpdates();
-        //sets player health back to max health subject to change once a potion feature is added
-        player.setPlayerHealthPoints(player.getPlayerMaxHealthPoints());
         currentState = GameState.PLAYER_TURN;
+        resetDrops();
         switchTurnOrder();
+        enableButtons();
     }
 
     //used to make the dropped loot back to null
@@ -203,22 +209,43 @@ public class Game {
         }
     }
 
+    //generates a potion after battle at a 40% drop chance subject to change
+    public void generatePotion() {
+        Random rand = new Random();
+        int randomChoice = rand.nextInt(9) + 1;
+
+        if (randomChoice <= 4) {
+            potionCount++;
+        }
+    }
+
+    public void potionHeal() {
+        //heal max player based on 40% of max health
+        player.heal((int) (player.getPlayerMaxHealthPoints() * 0.4));
+        //subtract a potion
+        potionCount--;
+        //update potion ui
+        controller.updatePotionCount();
+    }
+
+
+
     public void applyModifier() {
         //increases the difficulty starting at room 5 and increases every 5 levels
         //updates the room label and updates the corresponding modifier level as it increases
 
         if(currentRoomNumber >= modifierCheck) {
             modifierLevel++;
-            modifierCheck += 5;
+            modifierCheck += 10;
             controller.updateDifficultyUI();
         }
     }
 
     public void increaseDifficulty() {
-        //will increase the damage and defense by 5% every 5 stages subject to change after testing
-        double increaseDamage = 0.05;
-        double increaseDefense = 0.05;
-        double increaseHealth = 0.075;
+        //will increase the damage and defense by 5% every 10 stages subject to change after testing
+        double increaseDamage = 0.3;
+        double increaseDefense = 2;
+        double increaseHealth = 0.3;
 
         //calculate the new damage/defense/health only if the modifier level is 1 or greater, based on the current
         //modifier level does a calculation to increase all stats of the enemy
@@ -226,7 +253,7 @@ public class Game {
         if (modifierLevel != 0) {
             //Calculate the new levels based on current modifier level
             double newAttack = currentEnemy.getAttackDamage() *  (1 + (increaseDamage * modifierLevel));
-            double newDefense = currentEnemy.getDefense() *  (1 + (increaseDefense * modifierLevel));
+            double newDefense = currentEnemy.getDefense() +  (1 + (increaseDefense * modifierLevel));
             double newMaxHealth = currentEnemy.getEnemyMaxHealth() * (1 + (increaseHealth * modifierLevel));
 
             //set the new values to the enemy stats
@@ -240,24 +267,6 @@ public class Game {
     //will display rooms cleared and have a return button to bring back the player to the title screen also
     // need to add screen switches from end screen back to title screen and repeat
     public static void showStatsPage() {
-        System.out.println("Game start");
-        FXMLLoader fxmlLoader = new FXMLLoader(TimorMain.class.getResource("Game-Screen.fxml"));
-
-        try {
-            //Load the game screen file
-            Parent root = fxmlLoader.load();
-
-            //creates the new scene
-            GameScreenController controller = fxmlLoader.getController();
-            Scene scene = new Scene(root);
-            // Retrieve the stage
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-            controller.setStage(stage);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     //enables loot buttons
@@ -276,12 +285,14 @@ public class Game {
     public void enableButtons() {
         controller.getAttackButton().setVisible(true);
         controller.getBlockButton().setVisible(true);
+        controller.getPotionButton().setVisible(true);
     }
 
     //disable loot buttons
     public void disableButtons() {
         controller.getAttackButton().setVisible(false);
         controller.getBlockButton().setVisible(false);
+        controller.getPotionButton().setVisible(false);
     }
 
     //Assortment of all the required getters and setters
@@ -319,6 +330,14 @@ public class Game {
 
     public void setCurrentRoomNumber(int currentRoomNumber) {
         this.currentRoomNumber = currentRoomNumber;
+    }
+
+    public int getPotionCount() {
+        return potionCount;
+    }
+
+    public void setPotionCount(int count) {
+        this.potionCount = count;
     }
 
 }

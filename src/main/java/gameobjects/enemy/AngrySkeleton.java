@@ -8,7 +8,7 @@ public class AngrySkeleton extends Enemy {
     private final Image skeletonImage;
 
     public AngrySkeleton() {
-        super("Angry Skeleton", 15, 7,5);
+        super("Angry Skeleton", 8, 4,0);
         enemyIsAlive = true;
         this.skeletonImage = new Image(getClass().getResourceAsStream("/images/skeleton.png"));
 
