@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -65,6 +66,8 @@ public class GameScreenController {
         // No explicit initial setup required here
     }
 
+    //change the color of progress bars
+
     @FXML
     public void initialize() {
         // Initialize the game instance only if canvas is available
@@ -84,6 +87,9 @@ public class GameScreenController {
             yesEquipLootButton.setOnAction((this::handleYesEquipLoot));
             noEquipLootButton.setOnAction(this::handleNoEquipLoot);
             potionButton.setOnAction(this::handlePotionClick);
+
+            enemyHealthProgress.setStyle("-fx-accent: red;");
+            playerHealthProgress.setStyle("-fx-accent: red;");
         }
     }
 
@@ -151,6 +157,8 @@ public class GameScreenController {
     public void updateEquippedGear() {
         weaponLabel.setText(game.player.getEquippedWeapon().getName());
         armorLabel.setText(game.player.getEquippedArmor().getName());
+
+        setInventoryColor();
     }
 
     public void updatePotionCount() {
@@ -217,27 +225,30 @@ public class GameScreenController {
 
     public void displayDroppedWeapon() {
         String rarity = game.droppedWeapon.getRarity();
+        System.out.println("Weapon rarity: " + rarity);
 
         switch (rarity) {
             case "white":
-                lootText.setStyle("-fx-text-fill: white;");  // Set text color to white for white rarity
+                lootText.setFill(Color.WHITE);  // Set text color to white for white rarity
                 break;
             case "green":
-                lootText.setStyle("-fx-text-fill: green;");  // Set text color to green for green rarity
+                lootText.setFill(Color.LIGHTGREEN);  // Set text color to green for green rarity
                 break;
             case "red":
-                lootText.setStyle("-fx-text-fill: red;");  // Set text color to red for red rarity
+                lootText.setFill(Color.RED);  // Set text color to red for red rarity
                 break;
             default:
-                lootText.setStyle("-fx-text-fill: gray;");  // Default case, set to gray if rarity doesn't match known types
+                lootText.setFill(Color.GRAY);  // Default case, set to gray if rarity doesn't match known types
                 break;
         }
 
 
-        lootText.setText("Weapon Drop" +
+        String weaponDetails = ("Weapon Drop" +
                 "\nName: " + game.droppedWeapon.getName()
                 + "\nAttack Damage: " + game.droppedWeapon.getAttackDamage()
                 + "\nCrit Chance: " + game.droppedWeapon.getCritChance());
+
+        lootText.setText(weaponDetails);
     }
 
     public void displayTextTest() {
@@ -247,26 +258,29 @@ public class GameScreenController {
     public void displayDroppedArmor() {
 
         String rarity = game.droppedArmor.getRarity();
+        System.out.println("Armor rarity: " + rarity);
 
         switch (rarity) {
             case "white":
-                lootText.setStyle("-fx-text-fill: white;");  // Set text color to white for white rarity
+                lootText.setFill(Color.WHITE);  // Set text color to white for white rarity
                 break;
             case "green":
-                lootText.setStyle("-fx-text-fill: green;");  // Set text color to green for green rarity
+                lootText.setFill(Color.LIGHTGREEN);  // Set text color to green for green rarity
                 break;
             case "red":
-                lootText.setStyle("-fx-text-fill: red;");  // Set text color to red for red rarity
+                lootText.setFill(Color.RED);  // Set text color to red for red rarity
                 break;
             default:
-                lootText.setStyle("-fx-text-fill: gray;");  // Default case, set to gray if rarity doesn't match known types
+                lootText.setFill(Color.GRAY);  // Default case, set to gray if rarity doesn't match known types
                 break;
         }
 
-            lootText.setText("Armor Drop" +
+            String armorDetails = ("Armor Drop" +
                     "\nName: " + game.droppedArmor.getName()
             + "\nDefense: " + game.droppedArmor.getArmorValue()
             + "\nBlock Percentage: " + game.droppedArmor.getBlockPercentage());
+
+        lootText.setText(armorDetails);
     }
 
     public void lootDisplayReset() {
@@ -296,5 +310,41 @@ public class GameScreenController {
 
     public Button getPotionButton() {
         return potionButton;
+    }
+
+    public void setInventoryColor() {
+        String weaponRarity = game.player.getEquippedWeapon().getRarity();
+        String armorRarity = game.player.getEquippedArmor().getRarity();
+
+        switch (weaponRarity) {
+            case "white":
+                weaponLabel.setStyle("-fx-text-fill: white;");  // Set text color to white for white rarity
+                break;
+            case "green":
+                weaponLabel.setStyle("-fx-text-fill: lightgreen;");  // Set text color to green for green rarity
+                break;
+            case "red":
+                weaponLabel.setStyle("-fx-text-fill: red;");  // Set text color to red for red rarity
+                break;
+            default:
+                weaponLabel.setStyle("-fx-text-fill: gray;");  // Default case, set to gray if rarity doesn't match known types
+                break;
+        }
+
+        switch (armorRarity) {
+            case "white":
+                armorLabel.setStyle("-fx-text-fill: white;");  // Set text color to white for white rarity
+                break;
+            case "green":
+                armorLabel.setStyle("-fx-text-fill: lightgreen;");  // Set text color to green for green rarity
+                break;
+            case "red":
+                armorLabel.setStyle("-fx-text-fill: red;");  // Set text color to red for red rarity
+                break;
+            default:
+                armorLabel.setStyle("-fx-text-fill: gray;");  // Default case, set to gray if rarity doesn't match known types
+                break;
+        }
+
     }
 }

@@ -48,10 +48,10 @@ public class Game {
     Armor droppedArmor = null;
 
     //default 2 attack, 3 defense
-    Weapon startingWeapon = new Weapon ("Basic Dagger",2, Optional.of(0.0), "white");
+    Weapon startingWeapon = new Weapon ("Basic Dagger",3, Optional.of(0.0), "white");
     Armor startingArmor =  new Armor ("Basic Cloth", 3, Optional.of(0.0), "white");
 
-    Player player = new Player(30, startingWeapon, startingArmor);
+    Player player = new Player(20, startingWeapon, startingArmor);
     public Enemy currentEnemy;
 
     public Game(Canvas canvas, GameScreenController controller) {
@@ -76,9 +76,11 @@ public class Game {
         switch (currentState) {
             case PLAYER_TURN:
                 disableLootButton();
+                enableButtons();
                 System.out.println("\nChoose an option");
                 break;
             case ENEMY_TURN:
+                disableButtons();
                 handleEnemyTurn();
                 break;
             case GAME_OVER:
@@ -86,11 +88,7 @@ public class Game {
                 break;
             case PLAYER_LOOT_OPTIONS:
                 resetDrops();
-                generateLoot();
-                generatePotion();
-                enableLootButton();
-                disableButtons();
-                controller.updateLootText();
+                handleLootInteraction();
                 break;
             case PLAYER_WIN:
                 System.out.println("Player Win advancing room");
@@ -98,6 +96,24 @@ public class Game {
                 enableButtons();
                 break;
         }
+    }
+
+    //generate loot and potion
+    //if an item is dropped display screen else game will continue
+    public void handleLootInteraction() {
+        generateLoot();
+        generatePotion();
+
+        if(droppedWeapon == null && droppedArmor == null) {
+            currentState = GameState.PLAYER_WIN;
+            switchTurnOrder();
+        } else {
+            generatePotion();
+            enableLootButton();
+            disableButtons();
+            controller.updateLootText();
+        }
+
     }
 
     public void takePlayerTurn() {
@@ -198,13 +214,16 @@ public class Game {
     //chooses either the armor or weapon and sets it to a random item based upon its rarity
     public void generateLoot() {
         Random rand = new Random();
-        int randomChoice = rand.nextInt(2);
+        int randomChoice = rand.nextInt(3);
+
         switch (randomChoice) {
             case 0:
                 this.droppedWeapon = randomWeaponDrop();
                 break;
             case 1:
                 this.droppedArmor  = randomArmorDrop();
+                break;
+            case 2:
                 break;
         }
     }
@@ -214,7 +233,7 @@ public class Game {
         Random rand = new Random();
         int randomChoice = rand.nextInt(9) + 1;
 
-        if (randomChoice <= 4) {
+        if (randomChoice <= 3) {
             potionCount++;
         }
     }
@@ -243,9 +262,9 @@ public class Game {
 
     public void increaseDifficulty() {
         //will increase the damage and defense by 5% every 10 stages subject to change after testing
-        double increaseDamage = 0.3;
+        double increaseDamage = 0.45;
         double increaseDefense = 2;
-        double increaseHealth = 0.3;
+        double increaseHealth = 0.45;
 
         //calculate the new damage/defense/health only if the modifier level is 1 or greater, based on the current
         //modifier level does a calculation to increase all stats of the enemy

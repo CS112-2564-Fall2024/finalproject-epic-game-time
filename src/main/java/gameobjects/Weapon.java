@@ -19,7 +19,7 @@ public class Weapon {
         WAR_HAMMER("War Hammer", 8,Optional.of(0.05), "green",0.07),
         HALBERD("Halberd", 10,Optional.of(0.03),"green",0.07),
         KATANA("Katana", 6,Optional.of(0.02),"green", 0.07),
-        LONGSWORD("LongSword", 11,Optional.of(0.02)," green", 0.07),
+        LONGSWORD("LongSword", 11,Optional.of(0.02),"green", 0.07),
         KHOPESH("Khopesh", 9,Optional.of(0.05),"green", 0.06),
 
         //Red 6%
