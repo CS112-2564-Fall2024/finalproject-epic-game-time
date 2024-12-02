@@ -22,13 +22,15 @@ public class TimorTitleScreenController {
     Button startButton;
     @FXML
     Button exitButton;
-    //add transparent button function later
 
     private Stage stage;
 
     public void initialize() {
         exitButton.setOnAction(this::handleExitButtonClick);
         startButton.setOnAction(this::handleGameStart);
+
+        startButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: white;");
+        exitButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: white;");
     }
 
     private void handleExitButtonClick(ActionEvent event) {

@@ -88,6 +88,14 @@ public class GameScreenController {
             noEquipLootButton.setOnAction(this::handleNoEquipLoot);
             potionButton.setOnAction(this::handlePotionClick);
 
+            //set buttons to transparent
+            attackButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: white;");
+            blockButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: white;");
+            potionButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: white;");
+            yesEquipLootButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: white;");
+            noEquipLootButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: white;");
+
+            //Set health bars to red
             enemyHealthProgress.setStyle("-fx-accent: red;");
             playerHealthProgress.setStyle("-fx-accent: red;");
         }
