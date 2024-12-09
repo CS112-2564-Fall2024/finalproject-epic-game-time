@@ -83,8 +83,7 @@ public abstract class Enemy {
         }
     }
 
-    //TODO need to figure out why damage during block phase is astronomically fucking high
-    //TODO might have to create a function built from scratch to determine the damege, consider player defense
+    //TODO might have to create a function built from scratch to determine the damage, consider player defense
 //    public double enemyDamageValue() {
 //        double enemyDamageValue = getAttackDamage()
 //    }
