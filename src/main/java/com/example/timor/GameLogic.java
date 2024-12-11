@@ -8,6 +8,8 @@ import gameobjects.enemy.LittleTweaker;
 
 import java.util.Random;
 
+//ended up storing all the logic within the Game class, this is just the old game loop that was ditched
+
 public class GameLogic {
 
 //    public void startGame() {

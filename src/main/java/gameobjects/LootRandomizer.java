@@ -51,6 +51,7 @@ public class LootRandomizer {
         return null;
     }
 
+    //used to test if method works correctly
     public static void main(String[] args) {
             Weapon droppedWeapon = randomWeaponDrop();
             System.out.println("Dropped weapon: " + droppedWeapon);

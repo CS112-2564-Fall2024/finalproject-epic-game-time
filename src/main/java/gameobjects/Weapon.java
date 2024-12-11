@@ -113,8 +113,6 @@ public class Weapon {
             damage *= 1.5;
         }
 
-        damage += applyFireDamage();
-
         return damage;
     }
 
@@ -126,15 +124,17 @@ public class Weapon {
     }
 
     //TODO change to special effects and account for red weapon effects, fire damage, life steal, something else
-    public double applyFireDamage() {
-        double fireDamage = 5.0;
+    //never got implemented into game
 
-        if(name.equalsIgnoreCase("flamerend")) {
-            return fireDamage;
-        }
-
-        return 0;
-    }
+//    public double applyFireDamage() {
+//        double fireDamage = 5.0;
+//
+//        if(name.equalsIgnoreCase("flamerend")) {
+//            return fireDamage;
+//        }
+//
+//        return 0;
+//    }
 
     @Override
     public String toString() {

@@ -13,6 +13,8 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class GameScreenController {
+    //all my fxml components for my GUI
+
     @FXML
     private Canvas canvas;
     @FXML
@@ -56,7 +58,7 @@ public class GameScreenController {
     @FXML
     private Label potionLabel;
 
-
+    //variables
     private Game game;
     private Stage stage;
     private final Image difficultyImage = new Image(getClass().getResourceAsStream("/images/Skull_Modifier.png"));
@@ -66,7 +68,7 @@ public class GameScreenController {
         // No explicit initial setup required here
     }
 
-    //change the color of progress bars
+
 
     @FXML
     public void initialize() {
@@ -101,6 +103,7 @@ public class GameScreenController {
         }
     }
 
+    // on attack button click sets the state to player attack and calls the take player turn to handle
     @FXML
     public void handleAttackButtonClick(ActionEvent event) {
         if (game != null && game.currentEnemy != null) {
@@ -108,6 +111,8 @@ public class GameScreenController {
             game.takePlayerTurn();
         }
     }
+
+    //upon block button click sets the game state to player block and calls the playerblock() method to handle
     @FXML
     private void handleBlockButtonClick(ActionEvent event) {
         if(game != null && game.currentEnemy != null) {
@@ -116,6 +121,7 @@ public class GameScreenController {
         }
     }
 
+    //upon potion click calls the potionHeal method to heal player and then sets it to enemy turn
     public void handlePotionClick(ActionEvent event) {
         //only use potion if potions are available
         if(game.getPotionCount() != 0) {
@@ -129,6 +135,7 @@ public class GameScreenController {
         }
     }
 
+    //stores all my UI updates
     public void handleUIUpdates(){
         updateHealthUI();
         updateEnemyName();
@@ -141,18 +148,22 @@ public class GameScreenController {
         updatePotionCount();
     }
 
+    //update room label
     public void updateRoomCounter() {
         roomNumberLabel.setText("Room Number: " + game.getCurrentRoomNumber());
     }
 
+    //update player damage label
     public void updateDamageCounter() {
         currentDamageLabel.setText("Damage: " + game.player.getEquippedWeapon().getAttackDamage());
     }
 
+    //update current player defense label
     public void updateCurrentDefense() {
         currentDefenseLabel.setText("Defense: " + game.player.getEquippedArmor().getArmorValue());
     }
 
+    //updates the current enemy name label
     public void updateEnemyName() {
         if (game.currentEnemy != null) {
             enemyNameLocation.setText(game.currentEnemy.getName());
@@ -162,6 +173,7 @@ public class GameScreenController {
 
     }
 
+    //upon the player taking a loot drop displays the name of the loot drop in inventory
     public void updateEquippedGear() {
         weaponLabel.setText(game.player.getEquippedWeapon().getName());
         armorLabel.setText(game.player.getEquippedArmor().getName());
@@ -169,20 +181,25 @@ public class GameScreenController {
         setInventoryColor();
     }
 
+    //updates the potion label
     public void updatePotionCount() {
         potionLabel.setText("Total: " + game.getPotionCount());
     }
 
+    //gets and displays the current enemy picture
     public void updateEnemyPicture() {
         if (game.currentEnemy != null) {
             enemyDisplay.setImage(game.currentEnemy.getImage());
 
+            //somewhat jank way of trying to get all the images to be sized within the image view box
+            //shyguy the only one giving me problems lol, i give up cant figure it out
             enemyDisplay.setPreserveRatio(true);
             enemyDisplay.setFitWidth(650);
             enemyDisplay.setFitHeight(650);
         }
     }
 
+    //this sets the progress bars as well as the label by their current health over their max health
     @FXML
     public void updateHealthUI() {
         // Ensure health progress bars are set correctly with safe checks on game and its properties
@@ -199,11 +216,13 @@ public class GameScreenController {
         }
     }
 
+    //upon the difficulty scale threshold met at room 10 updates and dsiplays the image at the top of the screen
     public void updateDifficultyUI() {
         difficultyImageView.setImage(difficultyImage);
         difficultyLabel.setText("x" + game.getModifierLevel());
     }
 
+    //checks to make sure the current dropped item is not null and then equips it to the player
     public void handleYesEquipLoot(ActionEvent event) {
         if(game.droppedWeapon != null && game.droppedArmor == null) {
             game.player.equipWeapon(game.droppedWeapon);
@@ -217,11 +236,13 @@ public class GameScreenController {
         }
     }
 
+    //if player does not take loot then game advances to next room
     public void handleNoEquipLoot(ActionEvent event) {
         game.setState(Game.GameState.PLAYER_WIN);
         game.switchTurnOrder();
     }
 
+    //if a loot item is dropped text is updated and displays stats of the dropped item
     public void updateLootText() {
         if(game.droppedWeapon != null && game.droppedArmor == null) {
             displayDroppedWeapon();
@@ -231,10 +252,12 @@ public class GameScreenController {
 
     }
 
+    //method to handle if the loot item is a weapon
     public void displayDroppedWeapon() {
         String rarity = game.droppedWeapon.getRarity();
         System.out.println("Weapon rarity: " + rarity);
 
+        //checks rarity of item and sets the text color that corresponds to its rarity
         switch (rarity) {
             case "white":
                 lootText.setFill(Color.WHITE);  // Set text color to white for white rarity
@@ -250,7 +273,7 @@ public class GameScreenController {
                 break;
         }
 
-
+        //details that are put onto label
         String weaponDetails = ("Weapon Drop" +
                 "\nName: " + game.droppedWeapon.getName()
                 + "\nAttack Damage: " + game.droppedWeapon.getAttackDamage()
@@ -259,15 +282,19 @@ public class GameScreenController {
         lootText.setText(weaponDetails);
     }
 
+    //this is for debugging/testing purposes
     public void displayTextTest() {
         lootText.setText("Hellloooooo");
     }
 
+
+    //displays armor if that is the loot drop
     public void displayDroppedArmor() {
 
         String rarity = game.droppedArmor.getRarity();
         System.out.println("Armor rarity: " + rarity);
 
+        //check rarity of item and sets text color that corresponds with rarity
         switch (rarity) {
             case "white":
                 lootText.setFill(Color.WHITE);  // Set text color to white for white rarity
@@ -291,11 +318,13 @@ public class GameScreenController {
         lootText.setText(armorDetails);
     }
 
+    //this resets the loot display so that it is an empty string after player decides to take or discard the item that
+    //is dropped
     public void lootDisplayReset() {
         lootText.setText("");
     }
 
-
+    //GETTERS/SETTERS for my buttons
     public void setStage(Stage stage) {
         this.stage = stage;
     }
@@ -320,6 +349,8 @@ public class GameScreenController {
         return potionButton;
     }
 
+    // this is the method that checks the equipped weapon and armor and sets the color of the text to the same
+    //of its rarity
     public void setInventoryColor() {
         String weaponRarity = game.player.getEquippedWeapon().getRarity();
         String armorRarity = game.player.getEquippedArmor().getRarity();

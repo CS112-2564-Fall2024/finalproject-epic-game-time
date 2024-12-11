@@ -24,7 +24,7 @@ import static gameobjects.LootRandomizer.randomWeaponDrop;
 
 public class Game {
 
-   //enumeration to hold the current game state and to be able to switch after the turn is handled
+   //enumeration to hold the current game state
     enum GameState {
         PLAYER_TURN,
         ENEMY_TURN,
@@ -36,6 +36,7 @@ public class Game {
     }
 
 
+    //Variables
     GameScreenController controller;
     private GameState currentState = GameState.PLAYER_TURN;
     private int currentRoomNumber;
@@ -44,16 +45,21 @@ public class Game {
     static Stage stage;
     private int potionCount;
 
+    //set loot drops to null at start of game
     Weapon droppedWeapon = null;
     Armor droppedArmor = null;
 
     //default 2 attack, 3 defense
+    //default values for players, probably should have stored them in the respective classes
     Weapon startingWeapon = new Weapon ("Basic Dagger",3, Optional.of(0.0), "white");
     Armor startingArmor =  new Armor ("Basic Cloth", 3, Optional.of(0.0), "white");
 
+    //initialization of the player with its weapon armor and starting stats
+    //also initialize the enemy
     Player player = new Player(20, startingWeapon, startingArmor);
     public Enemy currentEnemy;
 
+    //method to set the important variables to their values as well as launch the game
     public Game(Canvas canvas, GameScreenController controller) {
         this.controller = controller;
         this.modifierLevel = 0;
@@ -70,7 +76,10 @@ public class Game {
 
     }
 
+
+    //the actual game loop, after that condition is met the current state is changed the method is called again
     public void switchTurnOrder() {
+        //update health UI at the start of the game
         controller.updateHealthUI();
 
         switch (currentState) {
@@ -116,6 +125,8 @@ public class Game {
 
     }
 
+    //is called when player selects attack on the game screen
+    //method will attack the current enemy
     public void takePlayerTurn() {
         if (currentState == GameState.PLAYER_ATTACK) {
             player.playerAttack(currentEnemy);
@@ -135,6 +146,8 @@ public class Game {
         }
     }
 
+    //is called when player blocks on game screen
+    //method allows player to reduce damage taken from enemy
     public void playerBlock() {
         if (currentState == GameState.PLAYER_BLOCK) {
             System.out.println("Enemy Attacking");
@@ -154,6 +167,9 @@ public class Game {
     }
 
 
+    //the logic to handle the enemy turn
+    //is rather simple just takes the current enemy damage and attacks player
+    //that is currently all the enemy will do as of right now
     public void handleEnemyTurn() {
         System.out.println("Enemy Attacking");
         currentEnemy.enemyAttack(player);
@@ -172,7 +188,8 @@ public class Game {
     }
 
 
-    //sets current enemy based on random number and setting the case to its assigned enemy
+    //generates a random number and then chooses the next enemy
+    //is called at the start of every room
     public Enemy spawnRandomBasicEnemy() {
         Random rand = new Random();
         int randomChoice = rand.nextInt(6); // Generates a number from 0 to 5
@@ -192,26 +209,28 @@ public class Game {
 
     }
 
+    //this method handles the logic to advance the room
+    //mostly here to consolidate all the other methods into one method that can be called in the turn order method
     public void advanceRoom() {
-        this.currentEnemy = spawnRandomBasicEnemy();
-        currentRoomNumber++;
-        applyModifier();
-        increaseDifficulty();
-        controller.handleUIUpdates();
-        currentState = GameState.PLAYER_TURN;
-        resetDrops();
-        switchTurnOrder();
-        enableButtons();
+        this.currentEnemy = spawnRandomBasicEnemy(); //spawns new enemy
+        currentRoomNumber++; // increases the room number
+        applyModifier(); // applies the modifier if eligible
+        increaseDifficulty(); // increases the difficulty based on the current modifier level
+        controller.handleUIUpdates(); // update UI
+        currentState = GameState.PLAYER_TURN; // sets the current state back to player turn
+        resetDrops(); //resets the loot drops
+        switchTurnOrder(); // calls main game loop
+        enableButtons(); //reenable buttons
     }
 
-    //used to make the dropped loot back to null
+    //method to reset the dropped loot back to null at the start of every turn
     public void resetDrops() {
         this.droppedArmor = null;
         this.droppedWeapon = null;
     }
 
 
-    //chooses either the armor or weapon and sets it to a random item based upon its rarity
+    //33% chance of either receiving a Weapon/Armor or nothing
     public void generateLoot() {
         Random rand = new Random();
         int randomChoice = rand.nextInt(3);
@@ -228,7 +247,7 @@ public class Game {
         }
     }
 
-    //generates a potion after battle at a 40% drop chance subject to change
+    //generates a potion after battle at a 30% drop chance subject to change
     public void generatePotion() {
         Random rand = new Random();
         int randomChoice = rand.nextInt(9) + 1;
@@ -238,6 +257,7 @@ public class Game {
         }
     }
 
+    //method to heal player if potion is used in battle
     public void potionHeal() {
         //heal max player based on 40% of max health
         player.heal((int) (player.getPlayerMaxHealthPoints() * 0.4));
@@ -250,7 +270,7 @@ public class Game {
 
 
     public void applyModifier() {
-        //increases the difficulty starting at room 5 and increases every 5 levels
+        //increases the difficulty starting at room 10 and increases every 10 levels
         //updates the room label and updates the corresponding modifier level as it increases
 
         if(currentRoomNumber >= modifierCheck) {
@@ -261,7 +281,8 @@ public class Game {
     }
 
     public void increaseDifficulty() {
-        //will increase the damage and defense by 5% every 10 stages subject to change after testing
+        //will increase the damage and defense by the respective values every 10 stages
+        //current modifier determines how much the values will increase by
         double increaseDamage = 0.45;
         double increaseDefense = 2;
         double increaseHealth = 0.45;
@@ -282,9 +303,8 @@ public class Game {
             currentEnemy.setEnemyHealth(Math.round(newMaxHealth));
         }
     }
-    //TODO still need to add a page to transition to the end stage screen which will have a return button that '
-    //will display rooms cleared and have a return button to bring back the player to the title screen also
-    // need to add screen switches from end screen back to title screen and repeat
+
+    //wanted to make a stats page to be displayed at the end of the game but was not able to complete that
     public static void showStatsPage() {
     }
 

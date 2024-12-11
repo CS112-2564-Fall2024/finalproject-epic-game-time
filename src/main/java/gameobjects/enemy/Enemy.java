@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 
 public abstract class Enemy {
 
+    //variables
     private String name;
     private double enemyHealth;
     private double enemyMaxHealth;
@@ -70,6 +71,8 @@ public abstract class Enemy {
         return enemyIsAlive;
     }
 
+
+    //method that subtracts the enemy health based on player damage
     public void enemyTakeDamage(double damage) {
         // Calculate blocked damage (e.g., based on armor, defense, etc.)
         double finalDamage = calculateBlockedDamageEnemy(damage);  // Block damage and calculate final damage
@@ -83,11 +86,7 @@ public abstract class Enemy {
         }
     }
 
-    //TODO might have to create a function built from scratch to determine the damage, consider player defense
-//    public double enemyDamageValue() {
-//        double enemyDamageValue = getAttackDamage()
-//    }
-
+    //this calculates the damage the player would do based on the current enemies defense
     public double calculateBlockedDamageEnemy(double damage) {
         damage -= getDefense();
 
@@ -98,9 +97,11 @@ public abstract class Enemy {
         return damage;
     }
 
+    //displays enemy health
     public void displayHealthEnemy() {
         System.out.println("Enemy Health: " + enemyHealth + "/" + enemyMaxHealth);
     }
 
+    //method for enemy to attack abstract
     public abstract void enemyAttack(Player player);
 }

@@ -33,6 +33,7 @@ public class TimorTitleScreenController {
         exitButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: white;");
     }
 
+    //closes application
     private void handleExitButtonClick(ActionEvent event) {
         System.exit(0);
     }
@@ -41,6 +42,7 @@ public class TimorTitleScreenController {
         this.stage = stage;
     }
 
+    //launches the actual game screen and starts the game
     private void handleGameStart(ActionEvent event)  {
         System.out.println("Game start");
         FXMLLoader fxmlLoader = new FXMLLoader(TimorMain.class.getResource("Game-Screen.fxml"));

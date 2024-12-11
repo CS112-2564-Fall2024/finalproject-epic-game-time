@@ -55,7 +55,7 @@ public class Player {
         return isAlive;
     }
 
-    //taking damage
+    //method to handle how the player takes damage
     public void playerTakeDamage(int enemyDamage) {
         this.playerHealthPoints -= equippedArmor.calculateBlockedDamage(enemyDamage);
         //prevent going below 0 hp
@@ -65,7 +65,7 @@ public class Player {
         }
     }
 
-    //to heal player
+    //this heals the player
     public void heal(int healAmount) {
         playerHealthPoints += healAmount;
         // cap to max health
@@ -75,7 +75,8 @@ public class Player {
 
     }
 
-    // equip a new weapon to player
+    // equip a new weapon/armor to player
+
     public void equipWeapon(Weapon weapon) {
         this.equippedWeapon = weapon;
         System.out.println("Equipped the " + weapon.getName());
@@ -86,7 +87,8 @@ public class Player {
         System.out.println("Equipped the " + armor.getName());
     }
 
-    //TODO not final way for switch weapon
+
+    //code that is not needed for project
     public void switchWeapon(Weapon newWeapon) {
         this.equippedWeapon = newWeapon;
         System.out.println("switched to the " + newWeapon.getName());
@@ -99,11 +101,12 @@ public class Player {
         enemy.enemyTakeDamage(damage);// Let the enemy handle its damage and blocking logicDamageAfterDefense + " damage.");
     }
 
-    //if player block reduces damage by 50% + the block percentage of current equipped armor minus the armor rating
+    //if player block,
+    // reduces damage by 50% + the block percentage of current equipped armor minus the armor rating
     public void playerBlock(double enemyDamage) {
         double calculatedDamage = (enemyDamage * (0.5 + getEquippedArmor().getBlockPercentage().orElse(0.0)));
 
-        //set enemy health to 0 if it goes below 0
+        //set player health to 0 if it goes below 0
         playerTakeDamage((int) calculatedDamage);
 
         if(playerHealthPoints <= 0) {
@@ -123,6 +126,7 @@ public class Player {
 
         return playerBlockValue;
     }
+
     //Testing method to display current health
 
     public void displayHealthPoints() {
